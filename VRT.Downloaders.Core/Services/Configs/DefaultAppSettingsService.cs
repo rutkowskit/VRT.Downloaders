@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.IO;
 using System.Text;
+using VRT.Downloaders.Services.FileSystem;
 
 namespace VRT.Downloaders.Services.Configs
 {
@@ -9,11 +9,13 @@ namespace VRT.Downloaders.Services.Configs
     {
         private const string _settingsFileName = "AppSettings.json";
         private readonly string _settingsFilePath;
+        private readonly IFileSystemService _fileSystemService;
         private AppSettings _currentSettings;
 
-        public DefaultAppSettingsService()
+        public DefaultAppSettingsService(IFileSystemService fileSystemService)
         {
-            _settingsFilePath = GetSettingsFilePath();
+            _fileSystemService = fileSystemService;
+            _settingsFilePath = GetSettingsFilePath();            
         }
 
         public AppSettings GetSettings()
@@ -40,25 +42,25 @@ namespace VRT.Downloaders.Services.Configs
                 || settings.OutputDirectory != current.OutputDirectory;
         }
 
-        private static string GetSettingsFilePath()
+        private string GetSettingsFilePath()
         {
-            var appDataDir = DirectoryHelper.GetAppDataDirectory();
+            var appDataDir = _fileSystemService.GetAppDataDirectory(true);
             return Path.Combine(appDataDir, _settingsFileName);
         }
 
-        private static AppSettings LoadSettings(string configFilePath)
+        private AppSettings LoadSettings(string configFilePath)
         {
             return File.Exists(configFilePath)
                 ? LoadSettingsFromFile(configFilePath)
                 : GetDefaultSettings();
         }
 
-        private static AppSettings GetDefaultSettings()
+        private AppSettings GetDefaultSettings()
         {
             return new AppSettings()
             {
                 EnableClipboardMonitor = false,
-                OutputDirectory = DirectoryHelper.GetUserDownloadsDirectory()
+                OutputDirectory = _fileSystemService.GetDownloadsDirectory(true)
             };
         }
 

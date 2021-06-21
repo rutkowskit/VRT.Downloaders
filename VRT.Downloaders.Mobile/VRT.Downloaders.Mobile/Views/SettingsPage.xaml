@@ -4,9 +4,8 @@
              x:Class="VRT.Downloaders.Mobile.Views.SettingsPage">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <Entry IsReadOnly="False" Placeholder="Output directory">                
+            </Entry>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

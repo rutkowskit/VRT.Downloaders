@@ -24,10 +24,10 @@
             <Frame Grid.Row="1" CornerRadius="2" Margin="0" Padding="5">
                 <StackLayout>
                     <Label TextColor="{StaticResource Primary}">Medias available to download</Label>
-                    <CollectionView 
-                        x:Name="MediasListView"                        
-                        ItemsSource="{Binding Medias}"
-                        SelectionMode="Single">
+                    <CollectionView x:Name="MediasListView"                        
+                                    ItemsSource="{Binding Medias}"
+                                    SelectionMode="Single"
+                                    EmptyView="None">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Grid x:DataType="mediaService:MediaInfo">
@@ -52,13 +52,15 @@
                                         <Label Text="{Binding Extension}" LineBreakMode="NoWrap" 
                                                Style="{DynamicResource ListItemDetailTextStyle}" FontSize="13" />
                                     </StackLayout>
-                                    <ImageButton                                         
-                                        BackgroundColor="Transparent"                                        
-                                        Grid.Column="1"
-                                        Source="download_icon.png"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand}"
-                                        CommandParameter="{Binding}" >
-                                    </ImageButton>
+                                    <StackLayout Grid.Column="1" >
+                                        <ImageButton     
+                                            AutomationId="uxDownloadMediaButton"
+                                            BackgroundColor="Transparent"                                            
+                                            Source="download_icon.png"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand}"
+                                            CommandParameter="{Binding}" >
+                                        </ImageButton>
+                                    </StackLayout>
                                 </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
@@ -68,34 +70,51 @@
             <Frame Grid.Row="2" CornerRadius="2" Margin="0" Padding="5">
                 <StackLayout>
                     <Label TextColor="{StaticResource Primary}">Download queue</Label>
-                    <CollectionView 
-                x:Name="DownloadsListView"                
-                ItemsSource="{Binding Downloads}"
-                SelectionMode="Single">
+                    <CollectionView x:Name="DownloadsListView"                
+                                    ItemsSource="{Binding Downloads}"
+                                    SelectionMode="Single"
+                                    EmptyView="Empty"
+                                    >
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <StackLayout Padding="10" x:DataType="vm:DownloadTaskProxy" Orientation="Horizontal">
+                                <Grid Padding="10" x:DataType="vm:DownloadTaskProxy">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
                                     <StackLayout>
-                                        <Label  Text="{Binding Name}" LineBreakMode="TailTruncation" 
-                                        Style="{DynamicResource ListItemTextStyle}" 
-                                        FontSize="16" />
-                                        <Grid>
+                                        <xct:Expander
+                                            ExpandAnimationEasing="{x:Static Easing.CubicOut}"
+                                            CollapseAnimationEasing="{x:Static Easing.CubicOut}"
+                                            IsExpanded="False"                                            
+                                            >
+                                            <xct:Expander.Header>
+                                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                                    <Label Text="{Binding Name}" HorizontalOptions="FillAndExpand" 
+                                                           FontSize="16" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                                                </StackLayout>
+                                            </xct:Expander.Header>
+                                            <StackLayout>
+                                                <Label Text="{Binding Name}" LineBreakMode="WordWrap" Style="{DynamicResource ListItemTextStyle}" FontSize="12" >
+                                                </Label>
+                                                <Label Text="{Binding LastErrorMessage}"></Label>
+                                            </StackLayout>                                            
+                                        </xct:Expander>                                        
+                                        <Grid>                                            
                                             <ProgressBar 
                                                 Progress="{Binding DownloadProgress, Mode=OneWay, Converter={StaticResource PercentIntToDoubleConverter}}"
-                                                ProgressColor="MediumPurple">
+                                                ProgressColor="MediumPurple">                                                
                                             </ProgressBar>
                                             <Label FontSize="Micro" HorizontalTextAlignment="Center"
                                            TextColor="Black"
                                            Text="{Binding DownloadProgress, Mode=OneWay, StringFormat='{0}%'}"/>
-                                        </Grid>
+                                        </Grid>                                        
                                     </StackLayout>
-                                    <Button Text="Cancel" 
-                                    IsVisible="{Binding CanCancel}"
-                                    Command="{Binding CancelTaskCommand}" />
-                                    <Button Text="Remove" 
-                                    IsVisible="{Binding CanRemove}"
-                                    Command="{Binding RemoveTaskCommand}" />
-                                </StackLayout>
+                                    <StackLayout Grid.Column="1" >
+                                        <Button Text="Cancel" IsVisible="{Binding CanCancel}" Command="{Binding CancelTaskCommand}" BorderColor="Red" />
+                                        <Button Text="Remove" IsVisible="{Binding CanRemove}" Command="{Binding RemoveTaskCommand}" BorderColor="Red"/>
+                                    </StackLayout>                                    
+                                </Grid>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>

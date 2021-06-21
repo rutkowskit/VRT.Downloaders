@@ -12,7 +12,7 @@ namespace VRT.Downloaders
         public static IServiceCollection AddClientServices(this IServiceCollection services)
         {
             return services
-                .AddSingleton<IFileSystemService, DefaultFilesystemService>()
+                .WhenNotExists<IFileSystemService>(s => s.AddSingleton<IFileSystemService, DefaultFilesystemService>())                
                 .AddSingleton<IDownloadQueueService, DownloadQueueService>()
                 .AddSingleton<DownloadingWorker>()
                 .AddSingleton<IMediaService, YoutubeMediaService>()

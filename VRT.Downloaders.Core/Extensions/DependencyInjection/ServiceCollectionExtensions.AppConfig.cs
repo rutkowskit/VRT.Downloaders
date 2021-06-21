@@ -12,7 +12,7 @@ namespace VRT.Downloaders
         {
             return services
                 .AddSingleton(provider => InitConfiguration(provider))
-                .AddSingleton<IAppSettingsService, DefaultAppSettingsService>(); ;
+                .AddSingleton<IAppSettingsService, DefaultAppSettingsService>();
         }
         private static IConfiguration InitConfiguration(IServiceProvider provider)
         {

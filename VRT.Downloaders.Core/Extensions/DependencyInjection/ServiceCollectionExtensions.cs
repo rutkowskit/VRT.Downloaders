@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace VRT.Downloaders
 {
@@ -11,6 +12,20 @@ namespace VRT.Downloaders
                 .AddSerilogLogging()
                 .AddClientServices()
                 .AddViewModels();
+        }
+
+        public static IServiceCollection WhenNotExists<TService>(this IServiceCollection services,
+            Action<IServiceCollection> setupAction)
+        {
+            foreach (var service in services)
+            {
+                if (service.ServiceType == typeof(TService))
+                {
+                    return services;
+                }
+            }
+            setupAction(services);
+            return services;
         }
     }
 }

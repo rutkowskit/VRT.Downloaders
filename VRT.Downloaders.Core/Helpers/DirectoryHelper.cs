@@ -15,7 +15,7 @@ namespace VRT.Downloaders
         }
         public static string GetAppDataDirectory(bool ensureCreated = true)
         {
-            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             var subfolder = typeof(DefaultAppSettingsService).Assembly.GetName().Name;
             var fullPath = Path.Combine(appData, subfolder);
             return ensureCreated
