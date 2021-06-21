@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:vm="clr-namespace:VRT.Downloaders.ViewModels;assembly=VRT.Downloaders.Core" 
+             xmlns:mediaService ="clr-namespace:VRT.Downloaders.Services.Medias;assembly=VRT.Downloaders.Core"             
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             x:DataType="vm:MainWindowViewModel"
+             x:Class="VRT.Downloaders.Mobile.Views.DownloadsPage"
+             Title="{Binding Title}"
+             >
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Get Medias" Command="{Binding GetMediasCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="60*" x:Name="uxMediasList"/>
+                <RowDefinition Height="40*" x:Name="uxDownloadsList"/>
+            </Grid.RowDefinitions>
+            <Entry Placeholder="Media URL" Text="{Binding Uri }" ClearButtonVisibility="WhileEditing"></Entry>
+            
+            <Frame Grid.Row="1" CornerRadius="2" Margin="0" Padding="5">
+                <StackLayout>
+                    <Label TextColor="{StaticResource Primary}">Medias available to download</Label>
+                    <CollectionView 
+                        x:Name="MediasListView"                        
+                        ItemsSource="{Binding Medias}"
+                        SelectionMode="Single">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid x:DataType="mediaService:MediaInfo">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <StackLayout Padding="10" Spacing="1">
+                                        <xct:Expander
+                                            ExpandAnimationEasing="{x:Static Easing.CubicOut}"
+                                            CollapseAnimationEasing="{x:Static Easing.CubicOut}"
+                                            IsExpanded="False"                                            
+                                            >
+                                            <xct:Expander.Header>
+                                                <StackLayout Orientation="Horizontal" Spacing="0">
+                                                    <Label Text="{Binding Title}" HorizontalOptions="FillAndExpand" 
+                                                           FontSize="16" FontAttributes="Bold" LineBreakMode="TailTruncation" />                                                    
+                                                </StackLayout>
+                                            </xct:Expander.Header>
+                                            <Label Text="{Binding Title}" LineBreakMode="WordWrap" Style="{DynamicResource ListItemTextStyle}" FontSize="12" />
+                                        </xct:Expander>                                        
+                                        <Label Text="{Binding Extension}" LineBreakMode="NoWrap" 
+                                               Style="{DynamicResource ListItemDetailTextStyle}" FontSize="13" />
+                                    </StackLayout>
+                                    <ImageButton                                         
+                                        BackgroundColor="Transparent"                                        
+                                        Grid.Column="1"
+                                        Source="download_icon.png"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand}"
+                                        CommandParameter="{Binding}" >
+                                    </ImageButton>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+            <Frame Grid.Row="2" CornerRadius="2" Margin="0" Padding="5">
+                <StackLayout>
+                    <Label TextColor="{StaticResource Primary}">Download queue</Label>
+                    <CollectionView 
+                x:Name="DownloadsListView"                
+                ItemsSource="{Binding Downloads}"
+                SelectionMode="Single">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Padding="10" x:DataType="vm:DownloadTaskProxy" Orientation="Horizontal">
+                                    <StackLayout>
+                                        <Label  Text="{Binding Name}" LineBreakMode="TailTruncation" 
+                                        Style="{DynamicResource ListItemTextStyle}" 
+                                        FontSize="16" />
+                                        <Grid>
+                                            <ProgressBar 
+                                                Progress="{Binding DownloadProgress, Mode=OneWay, Converter={StaticResource PercentIntToDoubleConverter}}"
+                                                ProgressColor="MediumPurple">
+                                            </ProgressBar>
+                                            <Label FontSize="Micro" HorizontalTextAlignment="Center"
+                                           TextColor="Black"
+                                           Text="{Binding DownloadProgress, Mode=OneWay, StringFormat='{0}%'}"/>
+                                        </Grid>
+                                    </StackLayout>
+                                    <Button Text="Cancel" 
+                                    IsVisible="{Binding CanCancel}"
+                                    Command="{Binding CancelTaskCommand}" />
+                                    <Button Text="Remove" 
+                                    IsVisible="{Binding CanRemove}"
+                                    Command="{Binding RemoveTaskCommand}" />
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </Frame>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
