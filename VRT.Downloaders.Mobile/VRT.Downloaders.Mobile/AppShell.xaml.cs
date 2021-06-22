@@ -10,7 +10,7 @@ using Xamarin.CommunityToolkit.UI.Views.Options;
 
 namespace VRT.Downloaders.Mobile
 {
-    public partial class AppShell : Xamarin.Forms.Shell, IActivatableView
+    public partial class AppShell : Xamarin.Forms.Shell
     {
         public AppShell(MainWindowViewModel viewModel)
         {
@@ -24,9 +24,6 @@ namespace VRT.Downloaders.Mobile
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(async message => await ShowMessage(message))
                 .Discard();
-
-            viewModel.OnActivation();
-            //this.WhenActivated(_ => viewModel.OnActivation()).Discard();
         }
 
         private async Task ShowMessage(NotifyMessage message)
@@ -40,7 +37,7 @@ namespace VRT.Downloaders.Mobile
                     Foreground = message.Type == "Success" ? Color.Green : Color.Red
                 }
             };
-            await this.DisplayToastAsync(options);            
+            await this.DisplayToastAsync(options);
         }
     }
 }

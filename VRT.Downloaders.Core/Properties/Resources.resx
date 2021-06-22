@@ -147,4 +147,10 @@
   <data name="Info_DownloadInProgress" xml:space="preserve">
     <value>Download in progress</value>
   </data>
+  <data name="Title_Downloads" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="Title_Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
 </root>

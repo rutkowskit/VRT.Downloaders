@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using VRT.Downloaders.Desktop.Wpf.MainWindow;
+using VRT.Downloaders.Desktop.Wpf.Views;
 
 namespace VRT.Downloaders.Desktop.Wpf
 {
@@ -8,7 +8,8 @@ namespace VRT.Downloaders.Desktop.Wpf
         public static IServiceCollection AddViews(this IServiceCollection services)
         {
             return services
-                .AddSingleton<MainWindowView>();
+                .AddSingleton<MainWindowView>()
+                .AddTransient<AppSettingsView>(); ;
         }
     }
 }
