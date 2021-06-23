@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Input;
 using VRT.Downloaders.Models.Messages;
+using VRT.Downloaders.Properties;
 using VRT.Downloaders.Services.Configs;
 using VRT.Downloaders.Services.Downloads;
 using VRT.Downloaders.Services.Downloads.DownloadStates;
@@ -24,8 +25,7 @@ namespace VRT.Downloaders.ViewModels
     public sealed class MainWindowViewModel : BaseViewModel
     {
         private readonly IDownloadQueueService _downloadService;
-        private readonly IMediaService _mediaService;
-        private readonly IAppSettingsService _settings;
+        private readonly IMediaService _mediaService;        
         private readonly ReadOnlyObservableCollection<DownloadTaskProxy> _downloads;
         private readonly SourceList<MediaInfo> _medias;
 
@@ -34,11 +34,11 @@ namespace VRT.Downloaders.ViewModels
             IMessageBus messageBus,
             IAppSettingsService settings)
         {
-            ServicePointManager.DefaultConnectionLimit = 1000;
-            Title = "Downloads";
+            Title = Resources.Title_Downloads;
+            ServicePointManager.DefaultConnectionLimit = 1000;            
             GetMediasCommand = ReactiveCommand.CreateFromTask(GetMedias, CanGetMedias());
             DownloadMediaCommand = ReactiveCommand.CreateFromTask<MediaInfo>(DownloadMedia);
-            ProcessClipboardUrlCommand = ReactiveCommand.Create<string>(ProcessClipboardUrl);
+            ProcesUrlCommand = ReactiveCommand.Create<string>(ProcessUrl);
             ClearFinishedCommand = ReactiveCommand.Create(ClearFinished);
 
             Medias = new ObservableCollectionExtended<MediaInfo>();
@@ -52,8 +52,8 @@ namespace VRT.Downloaders.ViewModels
 
             _downloadService = downloadService;
             _mediaService = mediaService;
-            MessageBus = messageBus;
-            _settings = settings;
+            SettingsService = settings;
+            MessageBus = messageBus;            
 
             _downloadService.LiveDownloads.Connect()
                 .ObserveOn(RxApp.MainThreadScheduler)
@@ -67,35 +67,20 @@ namespace VRT.Downloaders.ViewModels
 
         public ReadOnlyObservableCollection<DownloadTaskProxy> Downloads => _downloads;
 
-        [Reactive] public string Uri { get; set; }
-        [Reactive] public string OutputDirectory { get; set; }
-        [Reactive] public bool EnableClipboardMonitor { get; set; }
+        [Reactive] public string Uri { get; set; }        
         [Reactive] public IMessageBus MessageBus { get; private set; }
-
+        public IAppSettingsService SettingsService { get; }
         public IObservableCollection<MediaInfo> Medias { get; set; }
 
         public ICommand DownloadMediaCommand { get; }
         public ICommand GetMediasCommand { get; }
-        public ICommand ProcessClipboardUrlCommand { get; }
+        public ICommand ProcesUrlCommand { get; }
         public ICommand ClearFinishedCommand { get; }
-
-        public void OnActivation()
-        {
-            var settings = _settings.GetSettings();
-            EnableClipboardMonitor = settings.EnableClipboardMonitor;
-            OutputDirectory = settings.OutputDirectory;
-
-            this.WhenAnyValue(p => p.OutputDirectory, p => p.EnableClipboardMonitor)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Where(w => !string.IsNullOrWhiteSpace(w.Item1))
-                .Subscribe(s => UpdateSettings(s))
-                .DisposeWith(Disposables)
-                .Discard();
-        }
 
         private Task DownloadMedia(MediaInfo media)
         {
-            var request = media.ToDownloadRequest(OutputDirectory);
+            var outputDir = SettingsService.GetSettings().OutputDirectory;
+            var request = media.ToDownloadRequest(outputDir);
             return _downloadService.AddDownloadTask(request).Discard();
         }
 
@@ -131,16 +116,6 @@ namespace VRT.Downloaders.ViewModels
                 .ForEach(download => download.RemoveTaskCommand.Execute(Unit.Default));
         }
 
-        private void UpdateSettings((string outDir, bool enableMonitor) settings)
-        {
-            var newSettings = new AppSettings()
-            {
-                EnableClipboardMonitor = settings.enableMonitor,
-                OutputDirectory = settings.outDir
-            };
-            _settings.SaveSettings(newSettings);
-        }
-
         private static async Task<Result<MediaInfo[]>> CreateDirectDownload(string uri)
         {
             if (!System.Uri.TryCreate(uri, UriKind.Absolute, out var resourceUri))
@@ -150,20 +125,16 @@ namespace VRT.Downloaders.ViewModels
 
             await Task.Yield();
             var extension = GetMediaExtension(uri);
-
-            var result = new[]
+            var mediaInfo = new MediaInfo()
             {
-                new MediaInfo()
-                {
-                    Uri = resourceUri,
-                    FormatDescription = string.IsNullOrWhiteSpace(extension)
+                Uri = resourceUri,
+                FormatDescription = string.IsNullOrWhiteSpace(extension)
                         ? "unknown"
                         : extension,
-                    Extension = extension,
-                    Title = HttpUtility.UrlDecode(Path.GetFileName(uri))
-                }
-            };
-            return result;
+                Extension = extension,
+                Title = HttpUtility.UrlDecode(Path.GetFileName(uri))
+            };                        
+            return new[] { mediaInfo };
         }
 
         private static string GetMediaExtension(string uri)
@@ -176,7 +147,7 @@ namespace VRT.Downloaders.ViewModels
             return extension;
         }
 
-        private void ProcessClipboardUrl(string text)
+        private void ProcessUrl(string text)
         {
             if (!System.Uri.TryCreate(text, UriKind.RelativeOrAbsolute, out var result)
                 || !result.IsAbsoluteUri)

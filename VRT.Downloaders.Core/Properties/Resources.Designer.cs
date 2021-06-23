@@ -149,5 +149,23 @@ namespace VRT.Downloaders.Properties {
                 return ResourceManager.GetString("Info_DownloadInProgress", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads.
+        /// </summary>
+        public static string Title_Downloads {
+            get {
+                return ResourceManager.GetString("Title_Downloads", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string Title_Settings {
+            get {
+                return ResourceManager.GetString("Title_Settings", resourceCulture);
+            }
+        }
     }
 }

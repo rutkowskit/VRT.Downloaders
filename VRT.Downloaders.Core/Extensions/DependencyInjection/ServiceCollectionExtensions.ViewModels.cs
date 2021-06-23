@@ -8,7 +8,8 @@ namespace VRT.Downloaders
         public static IServiceCollection AddViewModels(this IServiceCollection services)
         {
             return services
-                .AddSingleton<MainWindowViewModel>();
+                .AddSingleton<MainWindowViewModel>()
+                .AddSingleton<SettingsViewModel>();
         }
     }
 }

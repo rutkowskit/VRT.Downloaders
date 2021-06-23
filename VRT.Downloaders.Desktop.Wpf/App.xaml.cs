@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Windows;
 using System.Windows.Threading;
-using VRT.Downloaders.Desktop.Wpf.MainWindow;
+using VRT.Downloaders.Desktop.Wpf.Views;
 using VRT.Downloaders.Services.Downloads;
 
 namespace VRT.Downloaders.Desktop.Wpf
@@ -51,7 +51,7 @@ namespace VRT.Downloaders.Desktop.Wpf
         {
             await _appHost.StartAsync();
             StartJobs(_appHost.Services);
-            ShowMainWindow(_appHost.Services);
+            ShowMainWindow(_appHost.Services);            
             base.OnStartup(e);
         }
         protected override async void OnExit(ExitEventArgs e)

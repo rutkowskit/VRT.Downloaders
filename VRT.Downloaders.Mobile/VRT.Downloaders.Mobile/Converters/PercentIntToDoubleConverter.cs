@@ -4,7 +4,7 @@ using Xamarin.Forms;
 namespace VRT.Downloaders.Mobile.Converters
 {
     /// <summary>
-    /// Converts an incoming value using all of the incoming converters in sequence.
+    /// Converts an integer value to double precission percent number
     /// </summary>
     public class PercentIntToDoubleConverter : IValueConverter
     {

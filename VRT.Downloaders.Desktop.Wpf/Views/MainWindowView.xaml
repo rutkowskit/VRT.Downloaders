@@ -1,4 +1,4 @@
-﻿<Window x:Class="VRT.Downloaders.Desktop.Wpf.MainWindow.MainWindowView"
+﻿<Window x:Class="VRT.Downloaders.Desktop.Wpf.Views.MainWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -49,6 +49,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <TextBox                         
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"                    
@@ -56,18 +57,13 @@
                     Text="{Binding Uri, UpdateSourceTrigger=PropertyChanged}">
                     </TextBox>
                     <Button Height="Auto" Grid.Column="1" Margin="5 0 0 0" Command="{Binding GetMediasCommand}" Content="Get Medias" />
+                    <Button Height="Auto" Grid.Column="2" Margin="5 0 0 0" ToolTip="Settings" Click="OnOpenSettingsClick">
+                        <material:PackIcon Kind="Cog" />
+                    </Button>
                 </Grid>
 
                 <StackPanel Orientation="Vertical" Grid.Row="1" Margin="5 0">
-                    <TextBox     
-                        Style="{StaticResource MaterialDesignOutlinedTextBox}"                    
-                        material:HintAssist.Hint="Output directory"
-                        Text="{Binding OutputDirectory}">
-                    </TextBox>
-                    <controls:ClipboardMonitor                        
-                        MonitorEnabled="{Binding EnableClipboardMonitor, Mode=TwoWay}"
-                        ProcessClipboardTextCommand="{Binding ProcessClipboardUrlCommand}">
-                    </controls:ClipboardMonitor>
+                    <material:DialogHost x:Name="uxDialogHost"  DialogTheme="Inherit" />
                 </StackPanel>
             </Grid>
 
@@ -197,6 +193,7 @@
                     </ContextMenu>
                 </DataGrid.ContextMenu>
             </DataGrid>
+            
         </Grid>
         <material:Snackbar x:Name="MySnackbar" IsActive="False" MessageQueue="{Binding SnackBarQueue, ElementName=MainWindow}">
             <material:Snackbar.Resources>
@@ -212,5 +209,11 @@
                 </Style>
             </material:Snackbar.Resources>
         </material:Snackbar>
-    </Grid>
+        <controls:ClipboardMonitor
+            Visibility="Hidden"
+            ProcessClipboardTextCommand="{Binding ProcesUrlCommand}"
+            SettingsService="{Binding SettingsService, Mode=OneWay}"
+            >
+        </controls:ClipboardMonitor>
+    </Grid>    
 </Window>

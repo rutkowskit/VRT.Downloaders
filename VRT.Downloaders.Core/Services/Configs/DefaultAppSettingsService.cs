@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.IO;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using VRT.Downloaders.Services.FileSystem;
 
@@ -11,11 +14,16 @@ namespace VRT.Downloaders.Services.Configs
         private readonly string _settingsFilePath;
         private readonly IFileSystemService _fileSystemService;
         private AppSettings _currentSettings;
+        private readonly ISubject<AppSettings> _savedSubject;
+
+        public IObservable<AppSettings> Saved { get; }
 
         public DefaultAppSettingsService(IFileSystemService fileSystemService)
         {
+            _savedSubject = new Subject<AppSettings>();
+            Saved = _savedSubject.AsObservable();
             _fileSystemService = fileSystemService;
-            _settingsFilePath = GetSettingsFilePath();            
+            _settingsFilePath = GetSettingsFilePath();
         }
 
         public AppSettings GetSettings()
@@ -32,6 +40,7 @@ namespace VRT.Downloaders.Services.Configs
             {
                 SaveSettingsToFile(settings, _settingsFilePath);
                 _currentSettings = settings;
+                _savedSubject.OnNext(settings);                
             };
         }
 
@@ -57,11 +66,8 @@ namespace VRT.Downloaders.Services.Configs
 
         private AppSettings GetDefaultSettings()
         {
-            return new AppSettings()
-            {
-                EnableClipboardMonitor = false,
-                OutputDirectory = _fileSystemService.GetDownloadsDirectory(true)
-            };
+            var outputDirectory = _fileSystemService.GetDownloadsDirectory(true);
+            return new AppSettings(outputDirectory, false);
         }
 
         private static AppSettings LoadSettingsFromFile(string configFilePath)

@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using VRT.Downloaders.Services.Configs;
 
 namespace VRT.Downloaders.Desktop.Wpf.Controls
 {
@@ -19,23 +20,26 @@ namespace VRT.Downloaders.Desktop.Wpf.Controls
         public static readonly DependencyProperty MonitorEnabledProperty
            = DependencyProperty.Register(nameof(MonitorEnabled), typeof(bool), typeof(ClipboardMonitor));
 
+        public static readonly DependencyProperty SettingsServiceProperty
+           = DependencyProperty.Register(nameof(SettingsService), typeof(IAppSettingsService), typeof(ClipboardMonitor));
+
         public static readonly DependencyProperty ProcessClipboardTextCommandProperty
             = DependencyProperty.Register(nameof(ProcessClipboardTextCommand), typeof(ICommand), typeof(ClipboardMonitor));
 
         private IntPtr _handle;
         private IntPtr _clipboardViewerNext;
         private readonly HwndSourceHook _hwndHook;
-        private ISubject<string> _clipboardDataSubject;
+        private readonly ISubject<string> _clipboardDataSubject;
 
         public ClipboardMonitor()
         {
             InitializeComponent();
-            _clipboardDataSubject = new BehaviorSubject<string>("");            
+            _clipboardDataSubject = new BehaviorSubject<string>("");
             _hwndHook = new HwndSourceHook(WndProcHook);
             Loaded += OnControlLoaded;
 
             this.WhenActivated(disp =>
-            {                
+            {
                 _clipboardDataSubject
                     .Throttle(TimeSpan.FromMilliseconds(500))
                     .ObserveOnDispatcher()
@@ -46,7 +50,25 @@ namespace VRT.Downloaders.Desktop.Wpf.Controls
                     .Subscribe(v => EnableClipboardSniffing(v))
                     .DisposeWith(disp)
                     .Discard();
+
+                this.WhenAnyValue(p => p.SettingsService)
+                    .Subscribe(LoadValuesFromConfig)
+                    .DisposeWith(disp)
+                    .Discard();
+
             }).Discard();
+        }
+
+        private void LoadValuesFromConfig(IAppSettingsService settings)
+        {
+            if (settings == null)
+                return;
+            MonitorEnabled = settings.GetSettings().EnableClipboardMonitor;
+
+            settings.Saved
+                .ObserveOnDispatcher()
+                .Subscribe(s => MonitorEnabled = s.EnableClipboardMonitor)
+                .Discard();
         }
 
         private void OnControlLoaded(object sender, RoutedEventArgs e)
@@ -73,6 +95,11 @@ namespace VRT.Downloaders.Desktop.Wpf.Controls
             }
         }
 
+        public IAppSettingsService SettingsService
+        {
+            get => (IAppSettingsService)GetValue(SettingsServiceProperty);
+            set => SetValue(SettingsServiceProperty, value);
+        }
         public bool MonitorEnabled
         {
             get => (bool)GetValue(MonitorEnabledProperty);
@@ -127,7 +154,7 @@ namespace VRT.Downloaders.Desktop.Wpf.Controls
         {
             var iData = Clipboard.GetDataObject();
             if (iData.GetDataPresent(DataFormats.Text))
-            {               
+            {
                 var text = (string)iData.GetData(DataFormats.UnicodeText);
                 OnClipboardTextData(text);
             }

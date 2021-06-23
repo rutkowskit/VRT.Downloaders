@@ -1,11 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="VRT.Downloaders.Mobile.Views.SettingsPage">
+             x:Class="VRT.Downloaders.Mobile.Views.SettingsPage"
+             xmlns:vm="clr-namespace:VRT.Downloaders.ViewModels;assembly=VRT.Downloaders.Core"
+             x:DataType="vm:SettingsViewModel"
+             Title="{Binding Title}"
+             >
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Command="{Binding SaveSettingsCommand}" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-            <Entry IsReadOnly="False" Placeholder="Output directory">                
-            </Entry>
+            <Entry 
+                Text="{Binding OutputDirectory}"
+                IsReadOnly="False" 
+                Placeholder="Output directory">                
+            </Entry>            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
