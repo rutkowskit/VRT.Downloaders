@@ -1,8 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using VRT.Downloaders.Models.Messages;
 using VRT.Downloaders.Services.Downloads;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -23,11 +26,10 @@ namespace VRT.Downloaders.Mobile
 
         protected override async void OnStart()
         {
-            await EnsurePermissionGranted<Permissions.StorageWrite>()
-                .Bind(() => EnsurePermissionGranted<Permissions.StorageRead>())                
+            _ = await EnsurePermissionGranted<Permissions.StorageWrite>()
+                .Bind(() => EnsurePermissionGranted<Permissions.StorageRead>())
                 .Tap(() => StartJobs(ServiceProvider))
-                .OnFailure(() => System.Environment.Exit(0));            
-            
+                .OnFailure(() => Environment.Exit(0));
         }
         private static void StartJobs(IServiceProvider services)
         {
@@ -36,6 +38,8 @@ namespace VRT.Downloaders.Mobile
 
         protected override void OnSleep()
         {
+            Services.GetService<IMessageBus>()?.SendMessage(new StoreApplicationStateMessage());
+            //Environment.Exit(0);
         }
 
         protected override void OnResume()

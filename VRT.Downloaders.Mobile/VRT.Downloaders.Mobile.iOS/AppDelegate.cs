@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Foundation;
+﻿using Foundation;
+using Microsoft.Extensions.DependencyInjection;
 using UIKit;
+using VRT.Downloaders.Mobile.iOS.Services;
+using VRT.Downloaders.Services.FileSystem;
 
 namespace VRT.Downloaders.Mobile.iOS
 {
@@ -24,9 +23,14 @@ namespace VRT.Downloaders.Mobile.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             global::Xamarin.Forms.FormsMaterial.Init();
-            LoadApplication(new App());
+            LoadApplication(new App(ConfigureServices));
 
             return base.FinishedLaunching(app, options);
+        }
+
+        private void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<IFileSystemService, IosFileSystemService>();
         }
     }
 }

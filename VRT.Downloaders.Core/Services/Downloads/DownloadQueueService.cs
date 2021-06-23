@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using VRT.Downloaders.Models.Messages;
 using VRT.Downloaders.Properties;
 using VRT.Downloaders.Services.AppStates;
 using VRT.Downloaders.Services.Downloads.DownloadStates;
@@ -17,32 +18,18 @@ namespace VRT.Downloaders.Services.Downloads
         private readonly SourceCache<DownloadTask, string> _downloads;
         private readonly CompositeDisposable _disposables;
         private readonly IAppStateService _appStateService;
+        private readonly IMessageBus _messageBus;
         private const string _downloadQueueTasksStateKey = "State_DownloadQueueTasks";
-        public DownloadQueueService(IAppStateService appStateService)
+        public DownloadQueueService(IAppStateService appStateService, IMessageBus messageBus)
         {
             _disposables = new CompositeDisposable();
             _downloads = new SourceCache<DownloadTask, string>(d => d.Request.Uri.AbsoluteUri);
             LiveDownloads = _downloads.AsObservableCache();
             _disposables.Add(LiveDownloads);
             _appStateService = appStateService;
-
+            _messageBus = messageBus;
             RestoreDownloadQueueState();
-        }
-
-        private void RestoreDownloadQueueState()
-        {
-            if (_appStateService == null || _downloads == null)
-            {
-                return;
-            }
-            var tasks = _appStateService.Restore<DownloadTask[]>(_downloadQueueTasksStateKey)
-                ?? Array.Empty<DownloadTask>();
-
-            foreach (var task in tasks)
-            {
-                RemoveFromCacheWhenStateChangedToRemoved(_downloads, task);
-                _downloads.AddOrUpdate(task);
-            }
+            SetStoreApplicationStateMessageListener();
         }
 
         public IObservableCache<DownloadTask, string> LiveDownloads { get; }
@@ -72,13 +59,42 @@ namespace VRT.Downloaders.Services.Downloads
 
         public void Dispose()
         {
+            StoreDownloadQueueState();
+            _disposables.Dispose();
+        }
+
+        private void SetStoreApplicationStateMessageListener()
+        {
+            _messageBus.Listen<StoreApplicationStateMessage>()
+                .Subscribe(s => StoreDownloadQueueState())
+                .DisposeWith(_disposables)
+                .Discard();
+        }
+
+        private void StoreDownloadQueueState()
+        {
             var toStore = _downloads.Items
                 .Where(t => t.State != BaseDownloadState.States.Removed)
                 .ToArray();
 
             _appStateService?.Store(_downloadQueueTasksStateKey, toStore);
-            _disposables.Dispose();
         }
+        private void RestoreDownloadQueueState()
+        {
+            if (_appStateService == null || _downloads == null)
+            {
+                return;
+            }
+            var tasks = _appStateService.Restore<DownloadTask[]>(_downloadQueueTasksStateKey)
+                ?? Array.Empty<DownloadTask>();
+
+            foreach (var task in tasks)
+            {
+                RemoveFromCacheWhenStateChangedToRemoved(_downloads, task);
+                _downloads.AddOrUpdate(task);
+            }
+        }
+
 
         private static Result<DownloadRequest> EnsureNotInCache(ISourceCache<DownloadTask, string> cache, DownloadRequest request)
         {

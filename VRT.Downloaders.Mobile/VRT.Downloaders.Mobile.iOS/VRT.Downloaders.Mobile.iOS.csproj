@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="Services\IosFileSystemService.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -134,6 +135,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\..\VRT.Downloaders.Core\VRT.Downloaders.Core.csproj">
+      <Project>{36B601A4-543F-457D-80A0-D28EE4978B31}</Project>
+      <Name>VRT.Downloaders.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VRT.Downloaders.Mobile\VRT.Downloaders.Mobile.csproj">
       <Project>{AFFECE93-306F-432F-8E7E-241248AA9163}</Project>
       <Name>VRT.Downloaders.Mobile</Name>
