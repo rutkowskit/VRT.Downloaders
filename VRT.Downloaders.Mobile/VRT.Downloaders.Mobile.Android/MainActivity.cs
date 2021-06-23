@@ -7,7 +7,8 @@ using VRT.Downloaders.Services.FileSystem;
 
 namespace VRT.Downloaders.Mobile.Droid
 {
-    [Activity(Label = "VRT.Downloaders.Mobile", Icon = "@drawable/download_icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize,
+    [Activity(Label = "VRT.Downloaders.Mobile", Icon = "@drawable/download_icon", 
+        Theme = "@style/SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize,
         LaunchMode = LaunchMode.SingleInstance)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
@@ -19,6 +20,7 @@ namespace VRT.Downloaders.Mobile.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             global::Xamarin.Forms.FormsMaterial.Init(this, savedInstanceState);
             LoadApplication(new App(ConfigureServices));
+            SetTheme(Resource.Style.MainTheme);
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

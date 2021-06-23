@@ -20,7 +20,7 @@ namespace VRT.Downloaders.Mobile
         public App(Action<IServiceCollection> onConfig)
         {
             InitializeComponent();
-            ServiceProvider = ConfigureServiceProvider(onConfig, ConfigureServices);
+            ServiceProvider = ConfigureServiceProvider(onConfig, ConfigureServices);            
             MainPage = ServiceProvider.GetRequiredService<AppShell>();
         }
 

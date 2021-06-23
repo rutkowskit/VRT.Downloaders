@@ -42,7 +42,7 @@ namespace VRT.Downloaders.Services.Medias
                     Uri = new Uri(a.Url),
                     Title = videoInfo.Title,
                     Extension = a.Container.Name,
-                    FormatDescription = $"{a.AudioCodec}({a.Container.Name})",
+                    FormatDescription = $"Audio: {a.AudioCodec}({a.Container.Name})",
                     OutputFileName = videoInfo.Title.SanitizeAsFileName()
                 })
                 .ToArray();
@@ -58,7 +58,7 @@ namespace VRT.Downloaders.Services.Medias
                     Uri = new Uri(a.Url),
                     Title = videoInfo.Title,
                     Extension = a.Container.Name,
-                    FormatDescription = $"{a.Container.Name} {a.VideoQuality} {a.VideoResolution} {a.VideoCodec}",
+                    FormatDescription = $"Video+Audio: {a.Container.Name} {a.VideoQuality} {a.VideoResolution} {a.VideoCodec}",
                     OutputFileName = videoInfo.Title.SanitizeAsFileName()
                 })
                 .ToArray();
