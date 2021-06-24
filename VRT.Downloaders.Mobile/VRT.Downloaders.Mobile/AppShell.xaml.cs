@@ -30,11 +30,12 @@ namespace VRT.Downloaders.Mobile
         {
             var options = new SnackBarOptions()
             {
-
                 MessageOptions = new MessageOptions()
                 {
                     Message = message.Message,
-                    Foreground = message.Type == "Success" ? Color.Green : Color.Red
+                    Foreground = message.Type == Properties.Resources.Msg_Success 
+                        ? Color.Green
+                        : Color.Red
                 }
             };
             await this.DisplayToastAsync(options);

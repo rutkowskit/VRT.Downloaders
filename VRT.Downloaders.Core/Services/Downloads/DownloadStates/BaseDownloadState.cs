@@ -9,9 +9,10 @@ namespace VRT.Downloaders.Services.Downloads.DownloadStates
     {
         public enum States
         {
-            ToDownload = 0,
-            DownloadQueued = 1,
-            Downloading = 2,
+            Unspecified = 0,
+            ToDownload = 1,
+            DownloadQueued = 2,
+            Downloading = 3,
             Canceling = 4,
             Removed = 10,
             Finished = 100

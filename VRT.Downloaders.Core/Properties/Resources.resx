@@ -147,6 +147,9 @@
   <data name="Info_DownloadInProgress" xml:space="preserve">
     <value>Download in progress</value>
   </data>
+  <data name="Msg_Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
   <data name="Title_Downloads" xml:space="preserve">
     <value>Downloads</value>
   </data>

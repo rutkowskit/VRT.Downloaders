@@ -151,6 +151,15 @@ namespace VRT.Downloaders.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Success.
+        /// </summary>
+        public static string Msg_Success {
+            get {
+                return ResourceManager.GetString("Msg_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downloads.
         /// </summary>
         public static string Title_Downloads {

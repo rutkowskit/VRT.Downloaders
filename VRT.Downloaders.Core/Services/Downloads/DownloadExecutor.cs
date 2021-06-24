@@ -10,7 +10,7 @@ using VRT.Downloaders.Services.Downloads.DownloadStates;
 
 namespace VRT.Downloaders.Services.Downloads
 {
-    public sealed class DownloadExecutor : IDisposable
+    public sealed class DownloadExecutor : IDisposable, IDownloadExecutor
     {
         private int _isDownloading;
         private CancellationTokenSource _tokenSource;
@@ -105,12 +105,12 @@ namespace VRT.Downloaders.Services.Downloads
         private static async Task<Result<FileByteRange>> DoDownload(Uri url, FileByteRange range, DownloadToFileContext context)
         {
             return await WhileSuccess(async () => await DownloadRange(url, range, context),
-                () => context.CancellationToken.IsCancellationRequested,-1);
+                () => context.CancellationToken.IsCancellationRequested, -1);
         }
 
         private static async Task<Result<FileByteRange>> DownloadRange(Uri url, FileByteRange range, DownloadToFileContext context)
         {
-            await context.ReadSemaphore.WaitAsync(context.CancellationToken);            
+            await context.ReadSemaphore.WaitAsync(context.CancellationToken);
             try
             {
                 using (var remoteStream = new RemoteStream(url, range))

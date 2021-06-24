@@ -33,7 +33,7 @@ namespace VRT.Downloaders.Desktop.Wpf.Controls
             if (ClipboardDataSource != null)
             {
                 Clipboard.SetDataObject(ClipboardDataSource);
-                MessageBus?.SendMessage(new NotifyMessage("Success", "Link copied to clipboard"));
+                MessageBus?.SendMessage(new NotifyMessage(Properties.Resources.Msg_Success, "Link copied to clipboard"));
             }
         }
     }
