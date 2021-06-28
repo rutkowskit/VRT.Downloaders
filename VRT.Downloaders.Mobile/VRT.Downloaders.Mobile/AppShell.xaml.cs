@@ -12,14 +12,17 @@ namespace VRT.Downloaders.Mobile
 {
     public partial class AppShell : Xamarin.Forms.Shell
     {
-        public AppShell(MainWindowViewModel viewModel)
+        private readonly IMessageBus _messageBus;
+
+        public AppShell(MainWindowViewModel viewModel, IMessageBus messageBus)
         {
             InitializeComponent();
             //Routing.RegisterRoute(nameof(ItemDetailPage), typeof(ItemDetailPage));
             //Routing.RegisterRoute(nameof(NewItemPage), typeof(NewItemPage));                       
+            _messageBus = messageBus;
             BindingContext = viewModel;
 
-            MessageBus.Current
+            _messageBus
                 .Listen<NotifyMessage>()
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(async message => await ShowMessage(message))

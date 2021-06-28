@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using VRT.Downloaders.Properties;
 using YoutubeExplode;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
@@ -12,6 +13,10 @@ namespace VRT.Downloaders.Services.Medias
 {
     public sealed class YoutubeMediaService : IMediaService
     {
+        private static Regex UrlMatchingRegex = new Regex(
+            @"^http[s]?://(?:www\.)?(youtube\..{2,3}|youtu\.be)\/.{5,}$",
+            RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
         public async Task<Result<MediaInfo[]>> GetAvailableMedias(string resourceUrl)
         {
             var uri = new Uri(resourceUrl);
@@ -24,10 +29,16 @@ namespace VRT.Downloaders.Services.Medias
                 });
             return result;
         }
-
+        public Task<Result> CanGetMedia(string resourceUrl)
+        {
+            var result = UrlMatchingRegex.IsMatch(resourceUrl ?? "")
+                ? Result.Success()
+                : Result.Failure(Resources.Error_NotSupported);
+            return Task.FromResult(result);
+        }
         private Result<MediaInfo[]> ToMediaInfo(Video videoInfo, StreamManifest streams)
         {
-            var results = new List<MediaInfo>();            
+            var results = new List<MediaInfo>();
             results.AddRange(GetAudioStreams(videoInfo, streams));
             results.AddRange(GetMuxedStreams(videoInfo, streams));
             return results.ToArray();
@@ -47,7 +58,6 @@ namespace VRT.Downloaders.Services.Medias
                 })
                 .ToArray();
         }
-
         private IEnumerable<MediaInfo> GetMuxedStreams(Video videoInfo, StreamManifest manifest)
         {
             return manifest
@@ -63,7 +73,5 @@ namespace VRT.Downloaders.Services.Medias
                 })
                 .ToArray();
         }
-
-
     }
 }

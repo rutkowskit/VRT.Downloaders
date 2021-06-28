@@ -123,8 +123,14 @@
   <data name="Error_Exception" xml:space="preserve">
     <value>Exception: {0}</value>
   </data>
+  <data name="Error_IncorrectResourceUrl" xml:space="preserve">
+    <value>Incorrect resource Url</value>
+  </data>
   <data name="Error_MethodNotSupported_Name_Reason" xml:space="preserve">
     <value>Method {0} can not be performed. {1}</value>
+  </data>
+  <data name="Error_NotSupported" xml:space="preserve">
+    <value>Not supported</value>
   </data>
   <data name="Error_PartitionsNotCreated" xml:space="preserve">
     <value>Partitions not created</value>

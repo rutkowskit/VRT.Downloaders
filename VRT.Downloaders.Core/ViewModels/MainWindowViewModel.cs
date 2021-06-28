@@ -4,14 +4,13 @@ using DynamicData.Binding;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Input;
 using VRT.Downloaders.Models.Messages;
 using VRT.Downloaders.Properties;
@@ -25,20 +24,20 @@ namespace VRT.Downloaders.ViewModels
     public sealed class MainWindowViewModel : BaseViewModel
     {
         private readonly IDownloadQueueService _downloadService;
-        private readonly IMediaService _mediaService;        
+        private readonly IMediaService[] _mediaServices;
         private readonly ReadOnlyObservableCollection<DownloadTaskProxy> _downloads;
         private readonly SourceList<MediaInfo> _medias;
 
         public MainWindowViewModel(IDownloadQueueService downloadService,
-            IMediaService mediaService,
+            IEnumerable<IMediaService> mediaService,
             IMessageBus messageBus,
             IAppSettingsService settings)
         {
             Title = Resources.Title_Downloads;
-            ServicePointManager.DefaultConnectionLimit = 1000;            
+            ServicePointManager.DefaultConnectionLimit = 1000;
             GetMediasCommand = ReactiveCommand.CreateFromTask(GetMedias, CanGetMedias());
             DownloadMediaCommand = ReactiveCommand.CreateFromTask<MediaInfo>(DownloadMedia);
-            ProcesUrlCommand = ReactiveCommand.Create<string>(ProcessUrl);
+            ProcesUrlCommand = ReactiveCommand.CreateFromTask<string>(ProcessUrl);
             ClearFinishedCommand = ReactiveCommand.Create(ClearFinished);
 
             Medias = new ObservableCollectionExtended<MediaInfo>();
@@ -51,9 +50,9 @@ namespace VRT.Downloaders.ViewModels
                 .Discard();
 
             _downloadService = downloadService;
-            _mediaService = mediaService;
+            _mediaServices = mediaService?.ToArray() ?? Array.Empty<IMediaService>();
             SettingsService = settings;
-            MessageBus = messageBus;            
+            MessageBus = messageBus;
 
             _downloadService.LiveDownloads.Connect()
                 .ObserveOn(RxApp.MainThreadScheduler)
@@ -67,7 +66,7 @@ namespace VRT.Downloaders.ViewModels
 
         public ReadOnlyObservableCollection<DownloadTaskProxy> Downloads => _downloads;
 
-        [Reactive] public string Uri { get; set; }        
+        [Reactive] public string Uri { get; set; }
         [Reactive] public IMessageBus MessageBus { get; private set; }
         public IAppSettingsService SettingsService { get; }
         public IObservableCollection<MediaInfo> Medias { get; set; }
@@ -83,15 +82,14 @@ namespace VRT.Downloaders.ViewModels
             var request = media.ToDownloadRequest(outputDir);
             return _downloadService.AddDownloadTask(request).Discard();
         }
-
         private async Task GetMedias()
         {
             _medias.Clear();
-            var getMediaResult = await Result.Success()
-                .OnSuccessTry(() => _mediaService.GetAvailableMedias(Uri)
-                    .OnFailureCompensate(_ => CreateDirectDownload(Uri)))
-                .Bind(medias => medias)
-                .Tap(medias => medias.SetDefaultOutputFileName());
+
+            var getMediaResult = await GetMediaService(Uri)
+               .OnSuccessTry(mediaService => mediaService.GetAvailableMedias(Uri))
+               .Bind(medias => medias)
+               .Tap(medias => medias.SetDefaultOutputFileName());
 
             // call it after await to avoid Dispatcher problems when updating fields connected with binded properties
             getMediaResult
@@ -99,7 +97,21 @@ namespace VRT.Downloaders.ViewModels
                 .OnFailure(error => MessageBus.SendMessage(new NotifyMessage("Error", error)))
                 .Discard();
         }
+        private async Task<Result<IMediaService>> GetMediaService(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return Result.Failure<IMediaService>(Resources.Error_NotSupported);
+            }
 
+            foreach (var service in _mediaServices)
+            {
+                var canGetMedia = await service.CanGetMedia(url);
+                if (canGetMedia.IsSuccess)
+                    return Result.Success(service);
+            }
+            return Result.Success<IMediaService>(new DirectMediaService());
+        }
         private IObservable<bool> CanGetMedias()
         {
             return this.WhenValueChanged(p => p.Uri)
@@ -107,7 +119,6 @@ namespace VRT.Downloaders.ViewModels
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Select(uri => !string.IsNullOrWhiteSpace(uri));
         }
-
         private void ClearFinished()
         {
             Downloads
@@ -115,55 +126,35 @@ namespace VRT.Downloaders.ViewModels
                 .ToList()
                 .ForEach(download => download.RemoveTaskCommand.Execute(Unit.Default));
         }
-
-        private static async Task<Result<MediaInfo[]>> CreateDirectDownload(string uri)
+        private async Task ProcessUrl(string text)
         {
-            if (!System.Uri.TryCreate(uri, UriKind.Absolute, out var resourceUri))
-            {
-                return Result.Failure<MediaInfo[]>("Invalid Url");
-            }
-
-            await Task.Yield();
-            var extension = GetMediaExtension(uri);
-            var mediaInfo = new MediaInfo()
-            {
-                Uri = resourceUri,
-                FormatDescription = string.IsNullOrWhiteSpace(extension)
-                        ? "unknown"
-                        : extension,
-                Extension = extension,
-                Title = HttpUtility.UrlDecode(Path.GetFileName(uri))
-            };                        
-            return new[] { mediaInfo };
-        }
-
-        private static string GetMediaExtension(string uri)
-        {
-            var extension = Path.GetExtension(uri);
-            if (string.IsNullOrWhiteSpace(extension))
-            {
-                extension = "unknown";
-            }
-            return extension;
-        }
-
-        private void ProcessUrl(string text)
-        {
-            if (!System.Uri.TryCreate(text, UriKind.RelativeOrAbsolute, out var result)
-                || !result.IsAbsoluteUri)
-            {
-                return;
-            }
-
-            if (result.AbsolutePath != null && result.AbsolutePath.Contains("watch"))
-            {
-                var prevUri = Uri;
-                Uri = result.AbsoluteUri;
-                if (prevUri != Uri)
+            var result = await TryCreateResourceUrl(text)
+                .Bind(CheckIfMediaServiceExists)                
+                .Bind(CheckIfMediaUrlHasChanged)
+                .Tap(url =>
                 {
+                    Uri = url.AbsoluteUri;
                     MessageBus.SendMessage(new BringToFrontMessage("Main"));
-                }
-            }
+                });
+        }
+        
+        private Result<Uri> CheckIfMediaUrlHasChanged(Uri url)
+        {
+            return url.AbsoluteUri != Uri ? url : Result.Failure<Uri>("");
+        }
+        private async Task<Result<Uri>> CheckIfMediaServiceExists(Uri url)
+        {
+            return await GetMediaService(url.AbsoluteUri)
+                .Bind(s => s.CanGetMedia(url.AbsoluteUri))
+                .Map(() => url);
+        }
+
+        private static Result<Uri> TryCreateResourceUrl(string text)
+        {
+            return System.Uri.TryCreate(text, UriKind.RelativeOrAbsolute, out var result)
+                    && result.IsAbsoluteUri
+                ? result
+                : Result.Failure<Uri>(Resources.Error_IncorrectResourceUrl);
         }
     }
 }

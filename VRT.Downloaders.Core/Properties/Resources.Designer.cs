@@ -79,11 +79,29 @@ namespace VRT.Downloaders.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Incorrect resource Url.
+        /// </summary>
+        public static string Error_IncorrectResourceUrl {
+            get {
+                return ResourceManager.GetString("Error_IncorrectResourceUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Method {0} can not be performed. {1}.
         /// </summary>
         public static string Error_MethodNotSupported_Name_Reason {
             get {
                 return ResourceManager.GetString("Error_MethodNotSupported_Name_Reason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not supported.
+        /// </summary>
+        public static string Error_NotSupported {
+            get {
+                return ResourceManager.GetString("Error_NotSupported", resourceCulture);
             }
         }
         
