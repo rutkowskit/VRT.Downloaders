@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
-using VRT.Downloaders.Properties;
+using VRT.Downloaders.Services.Medias.Properties;
 
 namespace VRT.Downloaders.Services.Medias
 {
@@ -17,10 +17,10 @@ namespace VRT.Downloaders.Services.Medias
             }
 
             await Task.Yield();
-            var extension = GetMediaExtension(resourceUrl);
+            var extension = resourceUrl.GetMediaExtension();
             var mediaInfo = new MediaInfo()
             {
-                Uri = parsedUrl,
+                Url = parsedUrl,
                 FormatDescription = string.IsNullOrWhiteSpace(extension)
                         ? "unknown"
                         : extension,
@@ -32,17 +32,7 @@ namespace VRT.Downloaders.Services.Medias
         public Task<Result> CanGetMedia(string resourceUrl)
         {
             // always return false to avoid breaking the chain before checking other media services
-            return Task.FromResult(Result.Failure(Resources.Error_NotSupported)); 
-        }
-
-        private static string GetMediaExtension(string uri)
-        {
-            var extension = Path.GetExtension(uri);
-            if (string.IsNullOrWhiteSpace(extension))
-            {
-                extension = "unknown";
-            }
-            return extension;
+            return Task.FromResult(Result.Failure(Resources.Error_MediaNotSupported)); 
         }
     }
 }

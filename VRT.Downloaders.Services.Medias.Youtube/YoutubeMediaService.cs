@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using VRT.Downloaders.Properties;
+using VRT.Downloaders.Services.Medias.Properties;
 using YoutubeExplode;
 using YoutubeExplode.Videos;
 using YoutubeExplode.Videos.Streams;
 
-namespace VRT.Downloaders.Services.Medias
+namespace VRT.Downloaders.Services.Medias.Youtube
 {
     public sealed class YoutubeMediaService : IMediaService
     {
@@ -33,7 +33,7 @@ namespace VRT.Downloaders.Services.Medias
         {
             var result = UrlMatchingRegex.IsMatch(resourceUrl ?? "")
                 ? Result.Success()
-                : Result.Failure(Resources.Error_NotSupported);
+                : Result.Failure(Resources.Error_MediaNotSupported);
             return Task.FromResult(result);
         }
         private Result<MediaInfo[]> ToMediaInfo(Video videoInfo, StreamManifest streams)
@@ -50,7 +50,7 @@ namespace VRT.Downloaders.Services.Medias
                 .OrderByDescending(s => s.Bitrate)
                 .Select(a => new MediaInfo()
                 {
-                    Uri = new Uri(a.Url),
+                    Url = new Uri(a.Url),
                     Title = videoInfo.Title,
                     Extension = a.Container.Name,
                     FormatDescription = $"Audio: {a.AudioCodec}({a.Container.Name})",
@@ -65,7 +65,7 @@ namespace VRT.Downloaders.Services.Medias
                 .OrderByDescending(s => s.VideoResolution.Width)
                 .Select(a => new MediaInfo()
                 {
-                    Uri = new Uri(a.Url),
+                    Url = new Uri(a.Url),
                     Title = videoInfo.Title,
                     Extension = a.Container.Name,
                     FormatDescription = $"Video+Audio: {a.Container.Name} {a.VideoQuality} {a.VideoResolution} {a.VideoCodec}",

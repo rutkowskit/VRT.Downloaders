@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace VRT.Downloaders
 {
@@ -26,6 +27,16 @@ namespace VRT.Downloaders
             return string.IsNullOrWhiteSpace(format) || args == null || args.Length == 0
                 ? format
                 : string.Format(format, args);
+        }
+
+        public static string GetMediaExtension(this string uri)
+        {
+            var extension = Path.GetExtension(uri);
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                extension = "unknown";
+            }
+            return extension;
         }
     }
 }

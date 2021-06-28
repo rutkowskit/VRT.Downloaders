@@ -6,16 +6,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpFunctionalExtensions" Version="2.15.3" />
-    <PackageReference Include="DynamicData" Version="7.1.17" />
+    <PackageReference Include="DynamicData" Version="7.2.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="ReactiveUI.Fody" Version="13.3.2" />
+    <PackageReference Include="ReactiveUI.Fody" Version="14.1.1" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
-    <PackageReference Include="YoutubeExplode" Version="6.0.2" />
+    <PackageReference Include="YoutubeExplode" Version="6.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VRT.Downloaders.Common\VRT.Downloaders.Common.csproj" />
+    <ProjectReference Include="..\VRT.Downloaders.Services.Medias.TvpVod\VRT.Downloaders.Services.Medias.TvpVod.csproj" />
+    <ProjectReference Include="..\VRT.Downloaders.Services.Medias.Youtube\VRT.Downloaders.Services.Medias.Youtube.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +36,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Medias\" />
   </ItemGroup>
 
 </Project>
