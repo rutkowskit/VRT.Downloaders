@@ -30,7 +30,7 @@ namespace VRT.Downloaders
                 return responseFromServer;
             }
         }
-        private static HttpWebRequest CreateHttpWebRequest(Uri url,
+        public static HttpWebRequest CreateHttpWebRequest(this Uri url,
             string method = "GET",
             string origin = null, string referer = null)
         {
