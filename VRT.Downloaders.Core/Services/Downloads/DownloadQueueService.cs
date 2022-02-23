@@ -15,11 +15,11 @@ namespace VRT.Downloaders.Services.Downloads
 {
     public sealed class DownloadQueueService : IDownloadQueueService, IDisposable
     {
+        private const string DownloadQueueTasksStateKey = "State_DownloadQueueTasks";
         private readonly SourceCache<DownloadTask, string> _downloads;
         private readonly CompositeDisposable _disposables;
         private readonly IAppStateService _appStateService;
-        private readonly IMessageBus _messageBus;
-        private const string _downloadQueueTasksStateKey = "State_DownloadQueueTasks";
+        private readonly IMessageBus _messageBus;        
         public DownloadQueueService(IAppStateService appStateService, IMessageBus messageBus)
         {
             _disposables = new CompositeDisposable();
@@ -77,7 +77,7 @@ namespace VRT.Downloaders.Services.Downloads
                 .Where(t => t.State != BaseDownloadState.States.Removed)
                 .ToArray();
 
-            _appStateService?.Store(_downloadQueueTasksStateKey, toStore);
+            _appStateService?.Store(DownloadQueueTasksStateKey, toStore);
         }
         private void RestoreDownloadQueueState()
         {
@@ -85,7 +85,7 @@ namespace VRT.Downloaders.Services.Downloads
             {
                 return;
             }
-            var tasks = _appStateService.Restore<DownloadTask[]>(_downloadQueueTasksStateKey)
+            var tasks = _appStateService.Restore<DownloadTask[]>(DownloadQueueTasksStateKey)
                 ?? Array.Empty<DownloadTask>();
 
             foreach (var task in tasks)
@@ -94,7 +94,6 @@ namespace VRT.Downloaders.Services.Downloads
                 _downloads.AddOrUpdate(task);
             }
         }
-
 
         private static Result<DownloadRequest> EnsureNotInCache(ISourceCache<DownloadTask, string> cache, DownloadRequest request)
         {

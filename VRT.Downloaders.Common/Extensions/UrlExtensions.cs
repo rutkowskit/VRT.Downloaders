@@ -8,7 +8,7 @@ namespace VRT.Downloaders
 {
     public static partial class UrlExtensions
     {
-        private const string _defaultUserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1";
+        private const string DefaultUserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1";
 
         public static async Task<Result<long>> GetDownloadSize(this Uri url)
         {
@@ -36,7 +36,7 @@ namespace VRT.Downloaders
         {
             var request = WebRequest.CreateHttp(url);
             request.Method = method;
-            request.UserAgent = _defaultUserAgent;
+            request.UserAgent = DefaultUserAgent;
 
             if (!string.IsNullOrWhiteSpace(origin))
             {

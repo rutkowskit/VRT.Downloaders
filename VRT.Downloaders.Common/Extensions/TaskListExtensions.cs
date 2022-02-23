@@ -1,30 +1,59 @@
 ﻿using CSharpFunctionalExtensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace VRT.Downloaders
 {
     public static class TaskListExtensions
     {
-        public static async Task<Result> DoParallel<TResponse>(this IList<Task<Result<TResponse>>> tasks,
-            Action<TResponse> onSuccess = null, bool continueOnFailure = false)
+        public static Task<Result<IReadOnlyCollection<TResponse>>> DoParallel<TResponse>(this IList<Task<Result<TResponse>>> tasks,
+            Action<TResponse> onSuccess = null, bool continueOnFailure = false, Action<Result> onFailure = null,
+            CancellationToken cancellationToken = default)
         {
-            var result = new List<Result>();
+            var onSuccessAsync = new Func<TResponse, Task>((r) => { onSuccess?.Invoke(r); return Task.CompletedTask; });
+            var onFailureAsync = new Func<Result, Task>((r) => { onFailure?.Invoke(r); return Task.CompletedTask; });
+            return tasks.DoParallel(onSuccessAsync, continueOnFailure, onFailureAsync, cancellationToken);
+        }
+        public static Task<Result<IReadOnlyCollection<TResponse>>> DoParallelAsync<TResponse>(this IList<Task<Result<TResponse>>> tasks,
+            Func<TResponse, Task> onSuccessAsync = null, bool continueOnFailure = false, Func<Result, Task> onFailureAsync = null,
+            CancellationToken cancellationToken = default)
+        {
+            return tasks.DoParallel(onSuccessAsync, continueOnFailure, onFailureAsync, cancellationToken);
+        }
+
+        public static async Task<Result<IReadOnlyCollection<TResponse>>> DoParallel<TResponse>(this IList<Task<Result<TResponse>>> tasks,
+            Func<TResponse, Task> onSuccess, bool continueOnFailure, Func<Result, Task> onFailure,
+            CancellationToken cancellationToken)
+
+        {
+            var result = new List<Result<TResponse>>();
             while (tasks.Count > 0)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return Result.Failure<IReadOnlyCollection<TResponse>>("Operation canceled");
+                }
                 var finished = await PopAnyFinishedTask(tasks)
-                    .Tap(t => onSuccess?.Invoke(t));
-
+                    .TapIf(onSuccess != null, t => onSuccess(t));
                 result.Add(finished);
 
                 if (finished.IsSuccess)
                     continue;
-                
+                if (onFailure != null)
+                {
+                    await onFailure(finished);
+                }
                 if (continueOnFailure == false)
-                    return finished;
+                    return Result.Failure<IReadOnlyCollection<TResponse>>(finished.Error);
             }
-            return Result.Combine(result);
+            return result
+                .Where(x => x.IsSuccess)
+                .Select(x => x.Value)
+                .AsReadOnlyCollection()
+                .ToSuccess();
         }
 
         private static async Task<Result<T>> PopAnyFinishedTask<T>(IList<Task<Result<T>>> tasks)
@@ -35,6 +64,10 @@ namespace VRT.Downloaders
                 tasks.Remove(finishedTask);
                 var taskResult = await finishedTask;
                 return taskResult;
+            }
+            catch (TaskCanceledException ex)
+            {
+                return Result.Failure<T>(ex.Message);
             }
             catch (Exception ex)
             {

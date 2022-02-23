@@ -5,11 +5,11 @@ namespace VRT.Downloaders
 {
     public static class StringExtensions
     {
-        private static readonly char[] _invalids;
+        private static readonly char[] Invalids;
 
         static StringExtensions()
         {
-            _invalids = System.IO.Path.GetInvalidFileNameChars();
+            Invalids = Path.GetInvalidFileNameChars();
         }
         public static string SanitizeAsFileName(this string escapedString, string badCharReplacement = "_")
         {
@@ -17,7 +17,7 @@ namespace VRT.Downloaders
                 return escapedString;
 
             var newName = string
-                .Join(badCharReplacement, escapedString.Split(_invalids, StringSplitOptions.RemoveEmptyEntries))
+                .Join(badCharReplacement, escapedString.Split(Invalids, StringSplitOptions.RemoveEmptyEntries))
                 .TrimEnd('.');
             return newName;
         }

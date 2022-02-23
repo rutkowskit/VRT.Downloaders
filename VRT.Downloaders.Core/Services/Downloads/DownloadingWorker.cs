@@ -17,9 +17,9 @@ namespace VRT.Downloaders.Services.Downloads
         private readonly IDownloadQueueService _downloadService;
         private readonly CompositeDisposable _disposables;
         private readonly ConcurrentQueue<DownloadTask> _downloadTasks;
-
+        
         public DownloadingWorker(IDownloadQueueService downloadService)
-        {
+        {            
             _disposables = new CompositeDisposable();
             _downloadTasks = new ConcurrentQueue<DownloadTask>();
             _downloadService = downloadService;
@@ -37,24 +37,31 @@ namespace VRT.Downloaders.Services.Downloads
 
         private async Task StartDownloadingDeamon()
         {
+            var downloadTasks = new BlockingList<Task<Result<string>>>();
+            Task<Result<IReadOnlyCollection<string>>> downloadTask = null;
             while (true)
             {
-                if (!_downloadTasks.TryDequeue(out var toDownload))
+                //TODO: Add maksimum concurrent downloads download task into worker settings
+                if (downloadTasks.Count >= 4 || _downloadTasks.TryDequeue(out var toDownload) == false)
                 {
                     await Task.Delay(1000);
                     continue;
                 }
-
-                try
+                downloadTasks.Add(toDownload.Download().Finally(r => r.IsSuccess ? Result.Success("OK") : Result.Failure<string>(r.Error)));
+                                
+                if(downloadTask != null)
                 {
-                    await toDownload.Download().Discard();
+                    if(downloadTask.IsCompleted == false)
+                    {
+                        continue;
+                    }                    
+                    downloadTask = null;                    
                 }
-                catch (Exception ex)
+                downloadTask = downloadTasks.DoParallel(onFailure: error =>
                 {
-                    var message = Resources.Error_Exception.Format(ex.Message);
-                    toDownload.TransitionToState(
-                        new FinishedDownloadState(message));
-                }
+                    var message = Resources.Error_Exception.Format(error);
+                    toDownload.TransitionToState(new FinishedDownloadState(message));
+                }, continueOnFailure: true);                    
             }
         }
 
