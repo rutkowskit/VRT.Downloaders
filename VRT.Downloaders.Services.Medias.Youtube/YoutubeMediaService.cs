@@ -13,8 +13,8 @@ namespace VRT.Downloaders.Services.Medias.Youtube
 {
     public sealed class YoutubeMediaService : IMediaService
     {
-        private static Regex UrlMatchingRegex = new Regex(
-            @"^http[s]?://(?:www\.)?(youtube\..{2,3}|youtu\.be)\/.{5,}$",
+        private static readonly Regex UrlMatchingRegex = new Regex(
+            @"^http[s]?://(?:(?:www|m)\.)?(?:youtube\..{2,3}|youtu\.be)\/.{5,}$",
             RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
 
         public async Task<Result<MediaInfo[]>> GetAvailableMedias(string resourceUrl)

@@ -62,23 +62,31 @@
     <AndroidEnableMultiDex>false</AndroidEnableMultiDex>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Android" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <Reference Include="Mono.Android">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v11.0\Mono.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v1.0\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Preview\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v1.0\System.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Resizetizer.NT">
-      <Version>0.2.0</Version>
+      <Version>0.3.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Numerics.Vectors">
       <Version>4.5.0</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2337" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.1" />
     <PackageReference Include="Xamarin.Forms.Visual.Material">
-      <Version>5.0.0.2012</Version>
+      <Version>5.0.0.2337</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -97,22 +105,26 @@
     <AndroidResource Include="Resources\values\colors.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\VRT.Downloaders.Core\VRT.Downloaders.Core.csproj">
-      <Project>{36B601A4-543F-457D-80A0-D28EE4978B31}</Project>
-      <Name>VRT.Downloaders.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VRT.Downloaders.Mobile\VRT.Downloaders.Mobile.csproj">
-      <Project>{AFFECE93-306F-432F-8E7E-241248AA9163}</Project>
-      <Name>VRT.Downloaders.Mobile</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\download_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\splash_screen.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\VRT.Downloaders.Common\VRT.Downloaders.Common.csproj">
+      <Project>{787122f6-5184-44df-9a87-e2b43ab9c0cd}</Project>
+      <Name>VRT.Downloaders.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VRT.Downloaders.Core\VRT.Downloaders.Core.csproj">
+      <Project>{36B601A4-543F-457D-80A0-D28EE4978B31}</Project>
+      <Name>VRT.Downloaders.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VRT.Downloaders.Mobile\VRT.Downloaders.Mobile.csproj">
+      <Project>{e7751e73-580b-4d4e-a0fb-1a4c4b8a6d55}</Project>
+      <Name>VRT.Downloaders.Mobile</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
