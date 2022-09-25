@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31410.357
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRT.Downloaders.Mobile.Android", "VRT.Downloaders.Mobile\VRT.Downloaders.Mobile.Android\VRT.Downloaders.Mobile.Android.csproj", "{4A725C0D-73D6-42B6-B8DC-CFD867F99E69}"
 EndProject
@@ -33,7 +33,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRT.Downloaders.Services.Me
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRT.Downloaders.Common", "VRT.Downloaders.Common\VRT.Downloaders.Common.csproj", "{787122F6-5184-44DF-9A87-E2B43AB9C0CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRT.Downloaders.Services.Medias.Youtube", "VRT.Downloaders.Services.Medias.Youtube\VRT.Downloaders.Services.Medias.Youtube.csproj", "{62513372-94C7-4F84-804C-3D4F9E5A88FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRT.Downloaders.Services.Medias.Youtube", "VRT.Downloaders.Services.Medias.Youtube\VRT.Downloaders.Services.Medias.Youtube.csproj", "{62513372-94C7-4F84-804C-3D4F9E5A88FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maui", "Maui", "{8B0F08B9-1A59-403E-9538-4A9183CCE22E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRT.Downloaders.Maui", "VRT.Downloaders.Maui\VRT.Downloaders.Maui.csproj", "{0C85EC19-1BA6-4342-B577-7D1BDF33D322}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -169,6 +173,24 @@ Global
 		{62513372-94C7-4F84-804C-3D4F9E5A88FB}.Release|iPhone.Build.0 = Release|Any CPU
 		{62513372-94C7-4F84-804C-3D4F9E5A88FB}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{62513372-94C7-4F84-804C-3D4F9E5A88FB}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Debug|iPhone.Deploy.0 = Debug|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Debug|iPhoneSimulator.Deploy.0 = Debug|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Release|iPhone.Build.0 = Release|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Release|iPhone.Deploy.0 = Release|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322}.Release|iPhoneSimulator.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -184,6 +206,7 @@ Global
 		{94C8AA89-CEF3-4BFE-9119-F0DEEF57284D} = {FECF79B7-57E1-47A7-9538-65E2FF9ED88C}
 		{787122F6-5184-44DF-9A87-E2B43AB9C0CD} = {FECF79B7-57E1-47A7-9538-65E2FF9ED88C}
 		{62513372-94C7-4F84-804C-3D4F9E5A88FB} = {FECF79B7-57E1-47A7-9538-65E2FF9ED88C}
+		{0C85EC19-1BA6-4342-B577-7D1BDF33D322} = {8B0F08B9-1A59-403E-9538-4A9183CCE22E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2208E830-DE95-4DB6-ACC1-2B27763C8545}

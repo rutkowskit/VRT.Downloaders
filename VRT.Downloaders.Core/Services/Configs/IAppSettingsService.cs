@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace VRT.Downloaders.Services.Configs;
 
-namespace VRT.Downloaders.Services.Configs
+public interface IAppSettingsService
 {
-    public interface IAppSettingsService
-    {        
-        IObservable<AppSettings> Saved { get; }
-        AppSettings GetSettings();
-        void SaveSettings(AppSettings settings);
-    }
+    IObservable<AppSettings> Saved { get; }
+    AppSettings GetSettings();
+    void SaveSettings(AppSettings settings);
 }

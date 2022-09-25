@@ -20,7 +20,7 @@ namespace VRT.Downloaders
 
             return new ConfigurationBuilder()
              .SetBasePath(fsService.GetCurrentDirectory())
-             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
              .Build();
         }
     }
