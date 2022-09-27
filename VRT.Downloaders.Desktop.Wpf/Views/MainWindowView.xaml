@@ -110,8 +110,7 @@
                                         Height="35"                                     
                                         ToolTip="Copy link to clipboard"                                        
                                         Style="{StaticResource MaterialDesignFlatButton}"
-                                        ClipboardDataSource="{Binding Url.AbsoluteUri}"
-                                        MessageBus="{Binding DataContext.MessageBus, ElementName=MainWindow}"
+                                        ClipboardDataSource="{Binding Url.AbsoluteUri}"                                        
                                         >
                                         <material:PackIcon Kind="ClipboardArrowBottomOutline" Height="23" Width="23" />
                                     </controls:CopyToClipboardButton>

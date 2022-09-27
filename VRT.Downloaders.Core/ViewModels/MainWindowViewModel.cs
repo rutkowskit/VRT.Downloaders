@@ -1,18 +1,22 @@
-﻿namespace VRT.Downloaders.ViewModels;
+﻿using MediatR;
+
+namespace VRT.Downloaders.ViewModels;
 
 public sealed class MainWindowViewModel : BaseViewModel
 {
     private readonly IDownloadQueueService _downloadService;
+    private readonly IMediator _mediator;
     private readonly IMediaService[] _mediaServices;
     private readonly ReadOnlyObservableCollection<DownloadTaskProxy> _downloads;
     private readonly SourceList<MediaInfo> _medias;
 
     public MainWindowViewModel(IDownloadQueueService downloadService,
-        IEnumerable<IMediaService> mediaService,
-        IMessageBus messageBus,
-        IAppSettingsService settings)
+        IEnumerable<IMediaService> mediaService,        
+        IAppSettingsService settings,
+        IMediator mediator)
     {
         Title = Resources.Title_Downloads;
+        _medias = new SourceList<MediaInfo>();
         ServicePointManager.DefaultConnectionLimit = 1000;
         GetMediasCommand = ReactiveCommand.CreateFromTask(GetMedias, CanGetMedias());
         DownloadMediaCommand = ReactiveCommand.CreateFromTask<MediaInfo>(DownloadMedia);
@@ -20,7 +24,7 @@ public sealed class MainWindowViewModel : BaseViewModel
         ClearFinishedCommand = ReactiveCommand.Create(ClearFinished);
 
         Medias = new ObservableCollectionExtended<MediaInfo>();
-        _medias = new SourceList<MediaInfo>();
+        
         _medias.Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Bind(Medias)
@@ -31,7 +35,7 @@ public sealed class MainWindowViewModel : BaseViewModel
         _downloadService = downloadService;
         _mediaServices = mediaService?.ToArray() ?? Array.Empty<IMediaService>();
         SettingsService = settings;
-        MessageBus = messageBus;
+        _mediator = mediator;
 
         _downloadService.LiveDownloads.Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -46,8 +50,7 @@ public sealed class MainWindowViewModel : BaseViewModel
     public ReadOnlyObservableCollection<DownloadTaskProxy> Downloads => _downloads;
 
     [Reactive] public bool IsRefreshing { get; set; }
-    [Reactive] public string Uri { get; set; }
-    [Reactive] public IMessageBus MessageBus { get; private set; }
+    [Reactive] public string Uri { get; set; }    
     public IAppSettingsService SettingsService { get; }
     public IObservableCollection<MediaInfo> Medias { get; set; }
 
@@ -74,10 +77,9 @@ public sealed class MainWindowViewModel : BaseViewModel
                 .Tap(medias => medias.SetDefaultOutputFileName());
 
             // call it after await to avoid Dispatcher problems when updating fields connected with binded properties
-            getMediaResult
+            await getMediaResult
                 .Tap(medias => _medias.AddRange(medias))
-                .OnFailure(error => MessageBus.SendMessage(new NotifyMessage("Error", error)))
-                .Discard();
+                .OnFailure(error => _mediator.Publish(new NotifyMessage("Error", error)));
         }
         finally
         {
@@ -111,7 +113,7 @@ public sealed class MainWindowViewModel : BaseViewModel
         Downloads
             .Where(download => download.State == BaseDownloadState.States.Finished)
             .ToList()
-            .ForEach(download => download.RemoveTaskCommand.Execute(Unit.Default));
+            .ForEach(download => download.RemoveTaskCommand.Execute(System.Reactive.Unit.Default));
     }
     private async Task ProcessUrl(string text)
     {
@@ -121,13 +123,13 @@ public sealed class MainWindowViewModel : BaseViewModel
             .Tap(url =>
             {
                 Uri = url.AbsoluteUri;
-                MessageBus.SendMessage(new BringToFrontMessage("Main"));
+                _mediator.Publish(new BringToFrontMessage("Main"));
             });
     }
 
     private Result<Uri> CheckIfMediaUrlHasChanged(Uri url)
     {
-        return url.AbsoluteUri != Uri ? url : Result.Failure<Uri>("");
+        return url.AbsoluteUri != Uri ? url : Result.Failure<Uri>("Url is the same");
     }
     private async Task<Result<Uri>> CheckIfMediaServiceExists(Uri url)
     {

@@ -1,85 +1,85 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.IO;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Text;
 using VRT.Downloaders.Services.FileSystem;
 
-namespace VRT.Downloaders.Services.Configs
+namespace VRT.Downloaders.Services.Configs;
+
+public sealed class DefaultAppSettingsService : IAppSettingsService
 {
-    public sealed class DefaultAppSettingsService : IAppSettingsService
+    private const string SettingsFileName = "AppSettings.json";
+
+    private readonly string _settingsFilePath;
+    private readonly IFileSystemService _fileSystemService;
+    private AppSettings _currentSettings;
+
+    public event EventHandler<AppSettings> Saved;
+
+    public DefaultAppSettingsService(IFileSystemService fileSystemService)
     {
-        private const string _settingsFileName = "AppSettings.json";
-        private readonly string _settingsFilePath;
-        private readonly IFileSystemService _fileSystemService;
-        private AppSettings _currentSettings;
-        private readonly ISubject<AppSettings> _savedSubject;
+        Saved = delegate { };
+        _fileSystemService = fileSystemService;
+        _settingsFilePath = GetSettingsFilePath();
+    }
 
-        public IObservable<AppSettings> Saved { get; }
+    public AppSettings GetSettings()
+    {
+        if (_currentSettings != null)
+            return _currentSettings;
 
-        public DefaultAppSettingsService(IFileSystemService fileSystemService)
+        return _currentSettings = LoadSettings(_settingsFilePath);
+    }
+
+    public void SaveSettings(AppSettings settings)
+    {
+        if (HasChanges(settings))
         {
-            _savedSubject = new Subject<AppSettings>();
-            Saved = _savedSubject.AsObservable();
-            _fileSystemService = fileSystemService;
-            _settingsFilePath = GetSettingsFilePath();
-        }
+            SaveSettingsToFile(settings, _settingsFilePath);
+            _currentSettings = settings;
+            Saved(this, settings);
+        };
+    }
+    public async Task ResetToDefaults()
+    {
+        await Task.CompletedTask;
+        var defaults = GetDefaultSettings();
+        SaveSettings(defaults);
+    }
 
-        public AppSettings GetSettings()
-        {
-            if (_currentSettings != null)
-                return _currentSettings;
+    private bool HasChanges(AppSettings settings)
+    {
+        var current = GetSettings();
+        return settings.EnableClipboardMonitor != current.EnableClipboardMonitor
+            || settings.OutputDirectory != current.OutputDirectory;
+    }
 
-            return _currentSettings = LoadSettings(_settingsFilePath);
-        }
+    private string GetSettingsFilePath()
+    {
+        var appDataDir = _fileSystemService.GetAppDataDirectory(true);
+        return Path.Combine(appDataDir, SettingsFileName);
+    }
 
-        public void SaveSettings(AppSettings settings)
-        {
-            if (HasChanges(settings))
-            {
-                SaveSettingsToFile(settings, _settingsFilePath);
-                _currentSettings = settings;
-                _savedSubject.OnNext(settings);                
-            };
-        }
+    private AppSettings LoadSettings(string configFilePath)
+    {
+        return File.Exists(configFilePath)
+            ? LoadSettingsFromFile(configFilePath)
+            : GetDefaultSettings();
+    }
 
-        private bool HasChanges(AppSettings settings)
-        {
-            var current = GetSettings();
-            return settings.EnableClipboardMonitor != current.EnableClipboardMonitor
-                || settings.OutputDirectory != current.OutputDirectory;
-        }
+    private AppSettings GetDefaultSettings()
+    {
+        var outputDirectory = _fileSystemService.GetDownloadsDirectory(true);
+        return new AppSettings(outputDirectory, false);
+    }
 
-        private string GetSettingsFilePath()
-        {
-            var appDataDir = _fileSystemService.GetAppDataDirectory(true);
-            return Path.Combine(appDataDir, _settingsFileName);
-        }
+    private static AppSettings LoadSettingsFromFile(string configFilePath)
+    {
+        var content = File.ReadAllText(configFilePath, Encoding.UTF8);
+        return JsonConvert.DeserializeObject<AppSettings>(content);
+    }
 
-        private AppSettings LoadSettings(string configFilePath)
-        {
-            return File.Exists(configFilePath)
-                ? LoadSettingsFromFile(configFilePath)
-                : GetDefaultSettings();
-        }
-
-        private AppSettings GetDefaultSettings()
-        {
-            var outputDirectory = _fileSystemService.GetDownloadsDirectory(true);
-            return new AppSettings(outputDirectory, false);
-        }
-
-        private static AppSettings LoadSettingsFromFile(string configFilePath)
-        {
-            var content = File.ReadAllText(configFilePath, Encoding.UTF8);
-            return JsonConvert.DeserializeObject<AppSettings>(content);
-        }
-
-        private static void SaveSettingsToFile(AppSettings settings, string configFilePath)
-        {
-            var content = JsonConvert.SerializeObject(settings, Formatting.Indented);
-            File.WriteAllText(configFilePath, content, Encoding.UTF8);
-        }
+    private static void SaveSettingsToFile(AppSettings settings, string configFilePath)
+    {
+        var content = JsonConvert.SerializeObject(settings, Formatting.Indented);
+        File.WriteAllText(configFilePath, content, Encoding.UTF8);
     }
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VRT.Downloaders
 {
@@ -7,7 +7,7 @@ namespace VRT.Downloaders
     {
         public static IServiceCollection ConfigureCoreServices(this IServiceCollection services)
         {
-            return services
+            return services                
                 .AddAppConfig()
                 .AddSerilogLogging()
                 .AddClientServices()

@@ -64,11 +64,12 @@ namespace VRT.Downloaders.Desktop.Wpf.Controls
             if (settings == null)
                 return;
             MonitorEnabled = settings.GetSettings().EnableClipboardMonitor;
+            settings.Saved += OnSettingsSaved;
+        }
 
-            settings.Saved
-                .ObserveOnDispatcher()
-                .Subscribe(s => MonitorEnabled = s.EnableClipboardMonitor)
-                .Discard();
+        private void OnSettingsSaved(object sender, AppSettings e)
+        {
+            MonitorEnabled = e.EnableClipboardMonitor;
         }
 
         private void OnControlLoaded(object sender, RoutedEventArgs e)

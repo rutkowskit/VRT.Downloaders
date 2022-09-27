@@ -1,6 +1,4 @@
-﻿namespace VRT.Downloaders.Models.Messages
-{
-    public sealed class StoreApplicationStateMessage
-    {        
-    }
-}
+﻿using MediatR;
+
+namespace VRT.Downloaders.Models.Messages;
+public sealed record StoreApplicationStateMessage: INotification;

@@ -5,11 +5,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="VRT Downloader"
     xmlns:local="clr-namespace:VRT.Downloaders.Maui"
-    xmlns:pages="clr-namespace:VRT.Downloaders.Maui.Pages"
+    xmlns:pages="clr-namespace:VRT.Downloaders.Maui.Pages"    
     Shell.FlyoutBehavior="Disabled">
     
     <TabBar>        
         <ShellContent Title="Downloads" Icon="download_icon.png" Route="DownloadsPage" ContentTemplate="{DataTemplate pages:MainPage}" />
-        <ShellContent Title="Settings" Icon="settings_icon.png" ContentTemplate="{DataTemplate pages:SettingsPage}" />
-    </TabBar>
+        <ShellContent Title="Settings" Icon="settings_icon.png" ContentTemplate="{DataTemplate pages:SettingsPage}" />        
+    </TabBar>    
 </Shell>

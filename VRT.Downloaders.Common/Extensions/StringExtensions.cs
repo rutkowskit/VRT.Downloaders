@@ -1,15 +1,19 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace VRT.Downloaders
 {
     public static class StringExtensions
     {
-        private static readonly char[] Invalids;
+        private static readonly char[] InvalidChars;
 
         static StringExtensions()
         {
-            Invalids = Path.GetInvalidFileNameChars();
+            InvalidChars = Path.GetInvalidFileNameChars()
+                .Concat(new char[] { '"', '*', '/', ':', '<', '>', '?', '\\', '|', (char)0x7F })
+                .Distinct()
+                .ToArray();
         }
         public static string SanitizeAsFileName(this string escapedString, string badCharReplacement = "_")
         {
@@ -17,7 +21,7 @@ namespace VRT.Downloaders
                 return escapedString;
 
             var newName = string
-                .Join(badCharReplacement, escapedString.Split(Invalids, StringSplitOptions.RemoveEmptyEntries))
+                .Join(badCharReplacement, escapedString.Split(InvalidChars, StringSplitOptions.RemoveEmptyEntries))
                 .TrimEnd('.');
             return newName;
         }

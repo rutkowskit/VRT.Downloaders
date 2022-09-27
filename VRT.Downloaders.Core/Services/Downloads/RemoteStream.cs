@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
 
@@ -25,7 +26,7 @@ namespace VRT.Downloaders.Services.Downloads
         }
 
         public async Task<Stream> Open()
-        {
+        {            
             var req = (HttpWebRequest)WebRequest.Create(Url);
             req.AddRange(Range.From, Range.To);
             var response = await req.GetResponseAsync().DisposeWith(_disposables);

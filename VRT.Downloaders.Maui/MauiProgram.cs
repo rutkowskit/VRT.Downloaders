@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using MediatR;
 
 namespace VRT.Downloaders.Maui;
 public static class MauiProgram
@@ -15,10 +16,10 @@ public static class MauiProgram
                 fonts.AddFont("Roboto-Bold.ttf", "RobotoBold");
             });
 
-        builder.Services
-            .AddSingleton<AppShell>()
+        builder.Services            
             .ConfigureCoreServices()            
-            .AddViews();
+            .AddPresentation()
+            .AddMediatR(typeof(MauiProgram).Assembly);
 
         if(setup is not null)
         {

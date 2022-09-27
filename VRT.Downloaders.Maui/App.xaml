@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:VRT.Downloaders.Maui"
              xmlns:c="clr-namespace:VRT.Downloaders.Maui.Converters"
-             x:Class="VRT.Downloaders.Maui.App">
+             x:Class="VRT.Downloaders.Maui.App"             
+             >
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

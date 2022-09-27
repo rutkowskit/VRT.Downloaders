@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using ReactiveUI;
+using MediatR;
 using VRT.Downloaders.Models.Messages;
 using VRT.Downloaders.Services.Downloads;
 
@@ -8,18 +8,20 @@ namespace VRT.Downloaders.Maui;
 public partial class App : Application
 {
     private readonly IServiceProvider _services;
+    private readonly IMediator _mediator;
 
-    public App(AppShell shell, IServiceProvider services)
+    public App(AppShell shell, IServiceProvider services, IMediator mediator)
     {
         InitializeComponent();
         MainPage = shell;
         _services = services;
+        _mediator = mediator;
     }
     protected override async void OnStart()
     {
         _ = await EnsurePermissionGranted<Permissions.StorageWrite>()
             .Ensure(EnsurePermissionGranted<Permissions.StorageRead>)
-            .Ensure(EnsurePermissionGranted<Permissions.NetworkState>)            
+            .Ensure(EnsurePermissionGranted<Permissions.NetworkState>)
             .Tap(() => StartJobs(_services))
             .OnFailure(() => Environment.Exit(0));
 
@@ -37,8 +39,8 @@ public partial class App : Application
         _ = services.GetRequiredService<DownloadingWorker>();
     }
 
-    protected override void OnSleep()
+    protected override async void OnSleep()
     {
-        _services.GetService<IMessageBus>()?.SendMessage(new StoreApplicationStateMessage());        
+        await _mediator.Publish(new StoreApplicationStateMessage());
     }
 }

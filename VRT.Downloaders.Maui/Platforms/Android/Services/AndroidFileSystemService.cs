@@ -20,8 +20,6 @@ public sealed class AndroidFileSystemService : IFileSystemService
         var result = X.Environment.IsExternalStorageEmulated
             ? Path.Combine(X.Environment.ExternalStorageDirectory.AbsolutePath, X.Environment.DirectoryDownloads)
             : Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        return result;
-        //var result = (string)Android.OS.Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDownloads);
-        //return result;
+        return result;        
     }
 }

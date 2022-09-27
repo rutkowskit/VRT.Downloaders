@@ -2,7 +2,8 @@
 
 public interface IAppSettingsService
 {
-    IObservable<AppSettings> Saved { get; }
+    event EventHandler<AppSettings> Saved;
     AppSettings GetSettings();
     void SaveSettings(AppSettings settings);
+    Task ResetToDefaults();
 }
