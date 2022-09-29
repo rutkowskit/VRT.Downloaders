@@ -7,110 +7,139 @@
              x:Class="VRT.Downloaders.Maui.Pages.MainPage"
              xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              >
-    <ContentPage.Content>
-        <Grid RowDefinitions="Auto, Auto, 2*,Auto, *" Margin="5">            
+    <ContentPage.Content>        
+        <Grid RowDefinitions="Auto, *, *" Margin="5" RowSpacing="5">
             <SearchBar Placeholder="Media URL"
                        Text="{Binding Uri}"
                        FontFamily="RobotoRegular"
                        SearchCommand="{Binding GetMediasCommand}" />
-            <Label Grid.Row="1" Margin="0,16,10,5"
-                   Style="{StaticResource OptionLabel}"
-                   Text="Medias available to download" />
-            <RefreshView Grid.Row="2" Padding="5"
-                         Command="{Binding GetMediasCommand}"
-                         IsRefreshing="{Binding IsRefreshing}">
-                <CollectionView x:Name="MediasListView" 
-                                ItemsSource="{Binding Medias}"
-                                SelectionMode="None"
-                                EmptyView="None">
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout ItemSpacing="5" Orientation="Vertical" />
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Frame CornerRadius="5" Padding="0">
-                                <Grid x:DataType="mediaService:MediaInfo" ColumnDefinitions="*, 50">
-                                    <VerticalStackLayout Padding="10" Spacing="1">
-                                        <Label Text="{Binding Title}"
-                                               HorizontalOptions="FillAndExpand"
-                                               FontSize="16" FontFamily="RobotoBold"
+            <Border Grid.Row="1" BackgroundColor="Transparent">
+                <Grid RowDefinitions="Auto,*" RowSpacing="5">
+                    <Label Style="{StaticResource OptionLabel}"
+                           Text="Medias available to download" />
+                    <RefreshView Grid.Row="1" Padding="5"
+                                 Command="{Binding GetMediasCommand}"
+                                 IsRefreshing="{Binding IsRefreshing}">
+                        <CollectionView x:Name="MediasListView" 
+                                        ItemsSource="{Binding Medias}"
+                                        SelectionMode="None"
+                                        EmptyView="None">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout ItemSpacing="5" Orientation="Vertical" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame CornerRadius="5" Padding="0">
+                                        <Grid x:DataType="mediaService:MediaInfo" ColumnDefinitions="*, 50">
+                                            <VerticalStackLayout Padding="10" Spacing="1">
+                                                <Label Text="{Binding Title}"
+                                                       HorizontalOptions="FillAndExpand"
+                                                       FontSize="16" FontFamily="RobotoBold"
+                                                       LineBreakMode="TailTruncation" />
+                                                <Label FontSize="Micro">
+                                                    <Label.FormattedText>
+                                                        <FormattedString>
+                                                            <Span Text="{Binding FormatDescription}" />
+                                                        </FormattedString>
+                                                    </Label.FormattedText>
+                                                </Label>
+                                            </VerticalStackLayout>
+                                            <Grid Grid.Column="1" Margin="0,0,5,0">
+                                                <ImageButton 
+                                                    Style="{StaticResource CmdImageButton}"
+                                                    AutomationId="uxDownloadMediaButton"
+                                                    Source="{AppThemeBinding Light=download_icon.png, Dark=download_icon_white.png}"                                            
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand}"
+                                                    CommandParameter="{Binding}" >
+                                                </ImageButton>
+                                            </Grid>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </RefreshView>
+                </Grid>
+            </Border>
+            <Border Grid.Row="2" BackgroundColor="Transparent">
+                <Grid RowDefinitions="Auto,*" RowSpacing="5">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Style="{StaticResource OptionLabel}"
+                               Text="Download queue" />
+                        <ImageButton WidthRequest="20" HeightRequest="20"
+                                     Margin="20,0,0,0"                                     
+                                     BackgroundColor="Transparent"
+                                     AutomationId="uxClearFinishedButton"                                                     
+                                     Source="trash_icon.png"
+                                     Command="{Binding Path=ClearFinishedCommand, Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}}"
+                                     />
+                    </HorizontalStackLayout>
+                    
+                    <CollectionView Grid.Row="1" x:Name="DownloadsListView"                
+                                        ItemsSource="{Binding Downloads}"
+                                        SelectionMode="None"
+                                        EmptyView="Empty">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame CornerRadius="5" Padding="5">
+                                    <Grid x:DataType="vm:DownloadTaskProxy" ColumnDefinitions="*, Auto">
+                                        <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10">
+                                            <Label Text="{Binding Name}" 
+                                               FontFamily="RobotoRegular"
                                                LineBreakMode="TailTruncation" />
-                                        <Label FontSize="Micro">
-                                            <Label.FormattedText>
-                                                <FormattedString>
-                                                    <Span Text="{Binding FormatDescription}" />
-                                                </FormattedString>
-                                            </Label.FormattedText>
-                                        </Label>
-                                    </VerticalStackLayout>
-                                    <Grid Grid.Column="1" Margin="0,0,5,0">
-                                        <ImageButton 
-                                            WidthRequest="40"
-                                            HeightRequest="40"
-                                            Padding="5"
-                                            AutomationId="uxDownloadMediaButton"
-                                            Source="{AppThemeBinding Light=download_icon.png, Dark=download_icon_white.png}"                                            
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand}"
-                                            CommandParameter="{Binding}" >
-                                        </ImageButton>
+                                            <Grid Grid.Row="1" 
+                                              ColumnDefinitions="*,Auto"
+                                              Margin="0,0,15,0">
+                                                <ProgressBar Progress="{Binding DownloadProgress, Mode=OneWay, Converter={StaticResource PercentIntToDoubleConverter}}"
+                                                         ProgressColor="{StaticResource Primary}"
+                                                         Margin="0,0,10,15" />
+                                                <Label FontSize="Caption"
+                                                   Grid.Column="1"
+                                                   HorizontalTextAlignment="Center"                                               
+                                                   FontFamily="RobotoBold"                                               
+                                                   Text="{Binding DownloadProgress, Mode=OneWay, StringFormat='{0}%'}"/>
+                                            </Grid>
+                                            <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,Auto" ColumnSpacing="10">
+                                                <Label FontSize="Micro"
+                                                   Text="{Binding State, Converter={StaticResource DownloadStateToStringConverter}}"/>
+                                                <ImageButton IsVisible="{Binding State, Converter={StaticResource IsErrorDownloadStateConverter}}"
+                                                         Grid.Column="1"
+                                                         WidthRequest="20" HeightRequest="20"
+                                                         AutomationId="uxShowErrorButton"                                                     
+                                                         Source="error_icon.png"                                                     
+                                                         Command="{Binding Path=ShowDownloadErrorCommand, Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}}"
+                                                         CommandParameter="{Binding}" />
+                                            </Grid>
+                                        </Grid>
+                                        <HorizontalStackLayout Grid.Column="1" VerticalOptions="Center" >
+                                            <ImageButton IsVisible="{Binding State, Converter={StaticResource IsErrorDownloadStateConverter}}"
+                                                     Grid.Column="2" 
+                                                     Style="{StaticResource CmdImageButton}"                                                 
+                                                     AutomationId="uxRetryButton"
+                                                     Source="{AppThemeBinding Light=download_icon.png, Dark=download_icon_white.png}"
+                                                     Command="{Binding RetryTaskCommand}" />
+                                            <ImageButton IsVisible="{Binding CanCancel}"
+                                                     Style="{StaticResource CmdImageButton}"                                                 
+                                                     AutomationId="uxCancelTaskButton"                                                                                                                                         
+                                                     Source="stop_icon.png"                                            
+                                                     Command="{Binding CancelTaskCommand}" />
+                                            <ImageButton IsVisible="{Binding CanRemove}"
+                                                     Style="{StaticResource CmdImageButton}"
+                                                     AutomationId="uxRemoveTaskButton"                                                                                        
+                                                     Source="trash_icon.png"                                            
+                                                     Command="{Binding RemoveTaskCommand}" />
+                                        </HorizontalStackLayout>
                                     </Grid>
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </RefreshView>
-            <Label Grid.Row="3" Margin="0,16,10,5"
-                   Style="{StaticResource OptionLabel}"
-                   Text="Download queue" />
-            <CollectionView Grid.Row="4" x:Name="DownloadsListView"                
-                                    ItemsSource="{Binding Downloads}"
-                                    SelectionMode="None"
-                                    EmptyView="Empty">                
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout ItemSpacing="5" Orientation="Vertical"/>
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame CornerRadius="5" Padding="5">
-                            <Grid x:DataType="vm:DownloadTaskProxy" ColumnDefinitions="*, Auto">
-                                <Grid RowDefinitions="Auto, *" RowSpacing="10">
-                                    <Label Text="{Binding Name}" 
-                                           FontFamily="RobotoRegular"
-                                           LineBreakMode="TailTruncation" />
-                                    <Grid Grid.Row="1" ColumnDefinitions="*,30">
-                                        <ProgressBar Progress="{Binding DownloadProgress, Mode=OneWay, Converter={StaticResource PercentIntToDoubleConverter}}"
-                                                     ProgressColor="{StaticResource Primary}"
-                                                     Margin="0,0,10,15" />
-                                        <Label FontSize="Caption"
-                                               Grid.Column="1"
-                                               HorizontalTextAlignment="Center"                                               
-                                               FontFamily="RobotoBold"                                               
-                                               Text="{Binding DownloadProgress, Mode=OneWay, StringFormat='{0}%'}"/>
-                                    </Grid>
-                                </Grid>
-                                <VerticalStackLayout Grid.Column="1" 
-                                             VerticalOptions="Center" >
-                                    <ImageButton IsVisible="{Binding CanCancel}"
-                                                 WidthRequest="40"                                                 
-                                                 HeightRequest="40"
-                                                 Padding="5"
-                                                 AutomationId="uxCancelTaskButton"                                                                                        
-                                                 Source="stop_icon.png"                                            
-                                                 Command="{Binding CancelTaskCommand}" />
-                                    <ImageButton WidthRequest="40"
-                                                 HeightRequest="40"
-                                                 IsVisible="{Binding CanRemove}"
-                                                 Padding="5"
-                                                 AutomationId="uxRemoveTaskButton"                                                                                        
-                                                 Source="trash_icon.png"                                            
-                                                 Command="{Binding RemoveTaskCommand}" />
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+            
         </Grid>
     </ContentPage.Content>
 </ContentPage>

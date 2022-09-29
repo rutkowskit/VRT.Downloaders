@@ -1,8 +1,4 @@
-﻿using ReactiveUI;
-using System;
-using System.Reactive.Disposables;
-
-namespace VRT.Downloaders.ViewModels
+﻿namespace VRT.Downloaders.ViewModels
 {
     public abstract class BaseViewModel : ReactiveObject, IDisposable
     {

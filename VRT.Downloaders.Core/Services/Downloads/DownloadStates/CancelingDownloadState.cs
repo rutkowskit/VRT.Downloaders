@@ -1,6 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-
-namespace VRT.Downloaders.Services.Downloads.DownloadStates
+﻿namespace VRT.Downloaders.Services.Downloads.DownloadStates
 {
     public sealed class CancelingDownloadState : BaseDownloadState
     {

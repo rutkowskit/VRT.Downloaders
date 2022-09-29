@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Reactive.Disposables;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace VRT.Downloaders.Services.Downloads
 {

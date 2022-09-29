@@ -1,10 +1,19 @@
-﻿#### TODO:
-- [X] Add reset settings button
-- [ ] Add folder selector on android
-- [X] Add clipboard monitor on android
+﻿# VRT Media downloader
 
-## Buidilng Project
+This application downloads medias from supported sources to allow the user to convert it to other formats (using for example ```ffmpeg``` or ```format factory```).
 
-### Release Android
+## Supported media sources
+| Source name  |External lib used |External lib url|
+|:-:|:-:|:-:|
+|<b>YouTube</b>| Yes | |
+
+## Buidilng the Project
+
+### Publish Release for Android
 
 ``` dotnet publish -c Release -f net6.0-android ```
+
+
+### Publish Release for Windows 10
+
+``` dotnet publish -c Release -f net6.0-windows10.0.19041.0 --force -r win10-x64 --self-contained /p:PublishSingleFile=true ```

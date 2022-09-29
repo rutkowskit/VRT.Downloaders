@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using VRT.Downloaders.Services.Configs;
 using VRT.Downloaders.Services.FileSystem;
 
 namespace VRT.Downloaders

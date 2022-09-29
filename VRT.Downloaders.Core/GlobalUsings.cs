@@ -8,7 +8,6 @@ global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.Linq;
 global using System.Net;
-global using System.Reactive;
 global using System.Reactive.Disposables;
 global using System.Reactive.Linq;
 global using System.Text;

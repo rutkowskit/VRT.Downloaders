@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-using VRT.Downloaders.Services.Downloads.DownloadStates;
+﻿using System.Runtime.Serialization;
 
 namespace VRT.Downloaders.Services.Downloads
 {

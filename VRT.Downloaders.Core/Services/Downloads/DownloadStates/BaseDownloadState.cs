@@ -1,7 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using VRT.Downloaders.Properties;
+﻿using System.Runtime.CompilerServices;
 
 namespace VRT.Downloaders.Services.Downloads.DownloadStates
 {
@@ -15,7 +12,8 @@ namespace VRT.Downloaders.Services.Downloads.DownloadStates
             Downloading = 3,
             Canceling = 4,
             Removed = 10,
-            Finished = 100
+            Finished = 100,
+            Error = 1000
         }
         public abstract States State { get; }
         public virtual bool CanCancel => false;

@@ -1,9 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using ReactiveUI.Fody.Helpers;
-using System;
-using System.Threading.Tasks;
-using VRT.Downloaders.Services.Downloads.DownloadStates;
-using VRT.Downloaders.ViewModels;
+﻿using VRT.Downloaders.ViewModels;
 using static VRT.Downloaders.Services.Downloads.DownloadStates.BaseDownloadState;
 
 namespace VRT.Downloaders.Services.Downloads

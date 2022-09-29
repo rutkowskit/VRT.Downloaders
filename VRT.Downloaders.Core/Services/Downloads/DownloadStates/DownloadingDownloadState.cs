@@ -1,8 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using System.Threading.Tasks;
-using VRT.Downloaders.Properties;
-
-namespace VRT.Downloaders.Services.Downloads.DownloadStates
+﻿namespace VRT.Downloaders.Services.Downloads.DownloadStates
 {
     public sealed class DownloadingDownloadState : BaseDownloadState
     {
@@ -21,13 +17,18 @@ namespace VRT.Downloaders.Services.Downloads.DownloadStates
         }
         public override Task<Result> Download(IDownloadContext context)
         {
-            return _taskExecutor.Download(context)
-                .Finally(result => TransitionToFinishedState(context, result));
+            return Result.Success()
+                .BindTry(() => _taskExecutor.Download(context))
+                .Bind(() => TransitionToFinishedState(context))
+                .OnFailure(error => TransitionToErrorState(context, error));
         }
-        private Result TransitionToFinishedState(IDownloadContext context, Result result)
+        private Result TransitionToFinishedState(IDownloadContext context)
         {
-            return Transition(context, new FinishedDownloadState(result.IsSuccess ? Resources.Msg_Success : result.Error))
-                .Bind(() => result);
+            return Transition(context, new FinishedDownloadState(Resources.Msg_Success));                
+        }
+        private Result TransitionToErrorState(IDownloadContext context, string error)
+        {
+            return Transition(context, new ErrorDownloadState(error));
         }
     }
 }

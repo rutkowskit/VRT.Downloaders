@@ -1,11 +1,4 @@
-﻿using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-using System;
-using System.Linq.Expressions;
-using System.Reactive.Linq;
-using System.Windows.Input;
-using VRT.Downloaders.Services.Downloads;
-using VRT.Downloaders.Services.Downloads.DownloadStates;
+﻿using System.Linq.Expressions;
 
 namespace VRT.Downloaders.ViewModels
 {
@@ -25,6 +18,8 @@ namespace VRT.Downloaders.ViewModels
                 .ObserveOn(RxApp.MainThreadScheduler));
             RemoveTaskCommand = ReactiveCommand.Create(_task.Remove, this.WhenAnyValue(t => t.CanRemove)
                 .ObserveOn(RxApp.MainThreadScheduler));
+            RetryTaskCommand = ReactiveCommand.Create(_task.Download, this.WhenAnyValue(t => t.CanRemove)
+                .ObserveOn(RxApp.MainThreadScheduler));
         }
 
         public string Name => _task.Request.Name;
@@ -39,6 +34,7 @@ namespace VRT.Downloaders.ViewModels
 
         public ICommand CancelTaskCommand { get; }
         public ICommand RemoveTaskCommand { get; }
+        public ICommand RetryTaskCommand { get; }
 
         private void Bind<T>(Expression<Func<DownloadTask, T>> taskProperty,
           Expression<Func<DownloadTaskProxy, T>> proxyProperty)

@@ -9,7 +9,7 @@
     Shell.FlyoutBehavior="Disabled">
     
     <TabBar>        
-        <ShellContent Title="Downloads" Icon="download_icon.png" Route="DownloadsPage" ContentTemplate="{DataTemplate pages:MainPage}" />
+        <ShellContent Title="Downloads" Icon="download_icon.png" ContentTemplate="{DataTemplate pages:MainPage}" />
         <ShellContent Title="Settings" Icon="settings_icon.png" ContentTemplate="{DataTemplate pages:SettingsPage}" />        
     </TabBar>    
 </Shell>

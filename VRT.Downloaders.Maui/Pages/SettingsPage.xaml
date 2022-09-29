@@ -23,23 +23,23 @@
     </ContentPage.ToolbarItems>        
     <ContentPage.Content>
         <!-- Settings View -->
-        <ScrollView>
-            <Border Margin="15"
-                    StrokeThickness="1"
-                    Grid.Row="1"
-                    Grid.Column="1">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="15"/>
-                </Border.StrokeShape>
-                <VerticalStackLayout Spacing="15">
-                    <VerticalStackLayout>
-                        <Label Text="Video output directory" Style="{StaticResource OptionLabel}" />
-                        <Entry Text="{Binding OutputDirectory}" />
-                    </VerticalStackLayout>
-                    <VerticalStackLayout>                        
-                        <Label Text="Enable clipbloard monitor" Style="{StaticResource OptionLabel}" />
-                        <Switch Grid.Column="1" IsToggled="{Binding EnableClipboardMonitor}"/>                        
-                    </VerticalStackLayout>                    
+        <ScrollView Margin="10,0">
+            <Border Grid.Row="1"
+                    BackgroundColor="Transparent"
+                    Grid.Column="1">                
+                <VerticalStackLayout Spacing="10">
+                    <Border>
+                        <VerticalStackLayout>
+                            <Label Text="Video output directory" Style="{StaticResource OptionLabel}" />
+                            <Entry Text="{Binding OutputDirectory}" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border>
+                        <VerticalStackLayout>
+                            <Label Text="Enable clipbloard monitor" Style="{StaticResource OptionLabel}" />
+                            <Switch Grid.Column="1" IsToggled="{Binding EnableClipboardMonitor}"/>
+                        </VerticalStackLayout>
+                    </Border>
                 </VerticalStackLayout>                
             </Border>           
         </ScrollView>       

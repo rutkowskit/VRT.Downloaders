@@ -1,12 +1,5 @@
-﻿using CSharpFunctionalExtensions;
-using System;
-using System.IO;
-using System.Linq;
-using System.Reactive.Linq;
+﻿using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
-using VRT.Downloaders.Properties;
-using VRT.Downloaders.Services.Downloads.DownloadStates;
 
 namespace VRT.Downloaders.Services.Downloads
 {
@@ -84,22 +77,21 @@ namespace VRT.Downloaders.Services.Downloads
         {
             var outputFileName = downloadContext.Request.OutputFileName;
             var partitions = downloadContext.Partitions;
-            using (var context = new DownloadToFileContext(outputFileName, cancellationToken))
-            {
-                var downloadedSum = downloadContext.Partitions.DownloadedSize;
-                return await partitions.Partitions
-                    .Where(range => !range.IsDownloaded)
-                    .Select(range => DoDownload(partitions.ResourcePath, range, context)) //Here
-                    .ToList()
-                    .DoParallel(downloaded =>
-                    {
-                        downloaded.IsDownloaded = true;
-                        downloaded.LastError = null;
-                        var sum = Interlocked.Add(ref downloadedSum, downloaded.Size);
-                        var progress = (int)(((double)sum / partitions.FileSize) * 100);
-                        progressCallback?.Invoke(progress % 101);
-                    });
-            }
+            using var context = new DownloadToFileContext(outputFileName, cancellationToken);
+            var downloadedSum = downloadContext.Partitions.DownloadedSize;
+            var result = await partitions.Partitions
+                .Where(range => !range.IsDownloaded)
+                .Select(range => DoDownload(partitions.ResourcePath, range, context)) //Here
+                .ToList()
+                .DoParallel(downloaded =>
+                {
+                    downloaded.IsDownloaded = true;
+                    downloaded.LastError = null;
+                    var sum = Interlocked.Add(ref downloadedSum, downloaded.Size);
+                    var progress = (int)(((double)sum / partitions.FileSize) * 100);
+                    progressCallback?.Invoke(progress % 101);
+                }, cancellationToken: cancellationToken);
+            return result;
         }
 
         private static async Task<Result<FileByteRange>> DoDownload(Uri url, FileByteRange range, DownloadToFileContext context)

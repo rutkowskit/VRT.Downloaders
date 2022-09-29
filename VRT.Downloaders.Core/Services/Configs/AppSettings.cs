@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace VRT.Downloaders.Services.Configs
+﻿namespace VRT.Downloaders.Services.Configs
 {
     public sealed class AppSettings : IEquatable<AppSettings>
     {

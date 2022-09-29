@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:VRT.Downloaders.Maui"
              xmlns:c="clr-namespace:VRT.Downloaders.Maui.Converters"
-             x:Class="VRT.Downloaders.Maui.App"             
+             x:Class="VRT.Downloaders.Maui.App"         
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              >
     <Application.Resources>
         <ResourceDictionary>
@@ -12,6 +13,9 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />                
             </ResourceDictionary.MergedDictionaries>
             <c:PercentIntToDoubleConverter x:Key="PercentIntToDoubleConverter" />
+            <c:DownloadStateToStringConverter x:Key="DownloadStateToStringConverter" />
+            <c:IsErrorDownloadStateConverter x:Key="IsErrorDownloadStateConverter" />
+            <toolkit:IsStringNotNullOrWhiteSpaceConverter x:Key="IsStringNotNullOrWhiteSpaceConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

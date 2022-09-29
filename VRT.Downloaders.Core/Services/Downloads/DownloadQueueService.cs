@@ -1,4 +1,5 @@
-﻿using VRT.Downloaders.Services.AppStates;
+﻿using System.Threading;
+using VRT.Downloaders.Services.AppStates;
 
 namespace VRT.Downloaders.Services.Downloads;
 
@@ -8,11 +9,12 @@ public sealed class DownloadQueueService : IDownloadQueueService, IDisposable
     private readonly SourceCache<DownloadTask, string> _downloads;
     private readonly CompositeDisposable _disposables;
     private readonly IAppStateService _appStateService;
-    
+    private readonly SemaphoreSlim _addTaskSemaphore;
     public DownloadQueueService(IAppStateService appStateService)
     {
+        _addTaskSemaphore = new SemaphoreSlim(1,1);
         _disposables = new CompositeDisposable();
-        _downloads = new SourceCache<DownloadTask, string>(d => d.Request.Uri.AbsoluteUri);
+        _downloads = new SourceCache<DownloadTask, string>(d => d.Request.Uri.AbsoluteUri);        
         LiveDownloads = _downloads.AsObservableCache();
         _disposables.Add(LiveDownloads);
         _appStateService = appStateService;
@@ -22,26 +24,24 @@ public sealed class DownloadQueueService : IDownloadQueueService, IDisposable
     public IObservableCache<DownloadTask, string> LiveDownloads { get; }
 
     public async Task<Result> AddDownloadTask(DownloadRequest request)
-    {
-        await Task.Yield();
+    {        
         var result = request == null
             ? Result.Failure(Resources.Error_TaskCannotBeNull)
             : Result.Success();
 
-        return result
-            .Bind(() => EnsureNotInCache(_downloads, request))
-            .Map(req => new DownloadTask(req))
-            .Tap(task => RemoveFromCacheWhenStateChangedToRemoved(_downloads, task))
-            .Tap(task => _downloads.AddOrUpdate(task));
-    }
-
-    public Task<Result> CancelDownloadTask(DownloadTask task)
-    {
-        if (!task.CanCancel)
+        try
         {
-            return Task.FromResult(Result.Failure(Resources.Error_CannotCancelTask));
+            await _addTaskSemaphore.WaitAsync();
+            return result
+                .Bind(() => EnsureNotInCache(_downloads, request))
+                .Map(req => new DownloadTask(req))
+                .Tap(task => RemoveFromCacheWhenStateChangedToRemoved(_downloads, task))
+                .Tap(task => _downloads.AddOrUpdate(task));
         }
-        return task.Cancel().Tap(() => _downloads.Refresh(task));
+        finally 
+        {
+            _addTaskSemaphore.Release();         
+        };
     }
 
     public void Dispose()

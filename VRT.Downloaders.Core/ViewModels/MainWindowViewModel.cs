@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using VRT.Downloaders.Services.Navigation;
 
 namespace VRT.Downloaders.ViewModels;
 
@@ -22,6 +23,7 @@ public sealed class MainWindowViewModel : BaseViewModel
         DownloadMediaCommand = ReactiveCommand.CreateFromTask<MediaInfo>(DownloadMedia);
         ProcesUrlCommand = ReactiveCommand.CreateFromTask<string>(ProcessUrl);
         ClearFinishedCommand = ReactiveCommand.Create(ClearFinished);
+        ShowDownloadErrorCommand = ReactiveCommand.CreateFromTask<DownloadTaskProxy>(ShowDownloadError);
 
         Medias = new ObservableCollectionExtended<MediaInfo>();
         
@@ -47,6 +49,12 @@ public sealed class MainWindowViewModel : BaseViewModel
             .Discard();
     }
 
+    private async Task ShowDownloadError(DownloadTaskProxy task)
+    {
+        var request = new ShowErrorRequest(task.LastErrorMessage);
+        await _mediator.Send(request);
+    }
+
     public ReadOnlyObservableCollection<DownloadTaskProxy> Downloads => _downloads;
 
     [Reactive] public bool IsRefreshing { get; set; }
@@ -58,12 +66,13 @@ public sealed class MainWindowViewModel : BaseViewModel
     public ICommand GetMediasCommand { get; }
     public ICommand ProcesUrlCommand { get; }
     public ICommand ClearFinishedCommand { get; }
+    public ICommand ShowDownloadErrorCommand { get; }
 
-    private Task DownloadMedia(MediaInfo media)
+    private async Task DownloadMedia(MediaInfo media)
     {
         var outputDir = SettingsService.GetSettings().OutputDirectory;
-        var request = media.ToDownloadRequest(outputDir);
-        return _downloadService.AddDownloadTask(request).Discard();
+        var request = media.ToDownloadRequest(outputDir);        
+        await _downloadService.AddDownloadTask(request).Discard();
     }
     private async Task GetMedias()
     {

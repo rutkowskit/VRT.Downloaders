@@ -1,7 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using System.Threading.Tasks;
-
-namespace VRT.Downloaders.Services.Downloads.DownloadStates
+﻿namespace VRT.Downloaders.Services.Downloads.DownloadStates
 {
     public sealed class QueuedDownloadState : BaseRemovableDownloadState
     {

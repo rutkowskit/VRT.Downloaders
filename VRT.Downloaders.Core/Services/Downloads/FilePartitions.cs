@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace VRT.Downloaders.Services.Downloads
+﻿namespace VRT.Downloaders.Services.Downloads
 {
     public sealed class FilePartitions
     {

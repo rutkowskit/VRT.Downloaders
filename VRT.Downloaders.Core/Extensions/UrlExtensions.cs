@@ -1,13 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-using VRT.Downloaders.Properties;
-using VRT.Downloaders.Services.Downloads;
-
-namespace VRT.Downloaders
+﻿namespace VRT.Downloaders
 {
     public static partial class UrlExtensions
     {

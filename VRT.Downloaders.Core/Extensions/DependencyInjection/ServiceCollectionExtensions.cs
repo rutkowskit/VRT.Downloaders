@@ -1,31 +1,29 @@
-﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace VRT.Downloaders
+namespace VRT.Downloaders;
+
+partial class ServiceCollectionExtensions
 {
-    partial class ServiceCollectionExtensions
+    public static IServiceCollection ConfigureCoreServices(this IServiceCollection services)
     {
-        public static IServiceCollection ConfigureCoreServices(this IServiceCollection services)
-        {
-            return services                
-                .AddAppConfig()
-                .AddSerilogLogging()
-                .AddClientServices()
-                .AddViewModels();
-        }
+        return services
+            .AddAppConfig()
+            .AddSerilogLogging()
+            .AddClientServices()
+            .AddViewModels();
+    }
 
-        public static IServiceCollection WhenNotExists<TService>(this IServiceCollection services,
-            Action<IServiceCollection> setupAction)
+    public static IServiceCollection WhenNotExists<TService>(this IServiceCollection services,
+        Action<IServiceCollection> setupAction)
+    {
+        foreach (var service in services)
         {
-            foreach (var service in services)
+            if (service.ServiceType == typeof(TService))
             {
-                if (service.ServiceType == typeof(TService))
-                {
-                    return services;
-                }
+                return services;
             }
-            setupAction(services);
-            return services;
         }
+        setupAction(services);
+        return services;
     }
 }

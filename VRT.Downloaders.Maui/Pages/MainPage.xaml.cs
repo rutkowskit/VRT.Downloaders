@@ -1,8 +1,4 @@
-﻿using Microsoft.Maui;
-using Microsoft.Maui.Platform;
-using ReactiveUI;
-using System.Reactive.Linq;
-using VRT.Downloaders.Models.Messages;
+﻿using ReactiveUI;
 using VRT.Downloaders.Services.Configs;
 using VRT.Downloaders.ViewModels;
 
@@ -17,14 +13,14 @@ public partial class MainPage : ContentPage, IActivatableView
         InitializeComponent();
         BindingContext = viewModel;
         _viewModel = viewModel;
-        _settingsService = settingsService;              
+        _settingsService = settingsService;
         Loaded += MainPage_Loaded;
-        _settingsService.Saved += OnSettingsSaved;            
+        _settingsService.Saved += OnSettingsSaved;
     }
 
     private void OnSettingsSaved(object sender, AppSettings e)
     {
-        if(e.EnableClipboardMonitor != IsClipboardMonitorEnabled)
+        if (e.EnableClipboardMonitor != IsClipboardMonitorEnabled)
         {
             ApplySettings(e);
         }
