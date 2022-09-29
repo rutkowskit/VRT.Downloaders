@@ -31,7 +31,13 @@
                     <Border>
                         <VerticalStackLayout>
                             <Label Text="Video output directory" Style="{StaticResource OptionLabel}" />
-                            <Entry Text="{Binding OutputDirectory}" />
+                            <Grid ColumnDefinitions="*, Auto">
+                                <Entry Text="{Binding OutputDirectory}" />
+                                <Button Grid.Column="1" 
+                                        IsVisible="{Binding IsFolderPickerSupported}"
+                                        Text="..." 
+                                        Command="{Binding PickOutputDirectoryCommand}"/>
+                            </Grid>                            
                         </VerticalStackLayout>
                     </Border>
                     <Border>

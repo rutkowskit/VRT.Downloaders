@@ -1,4 +1,6 @@
-﻿using VRT.Downloaders.Services.Confirmation;
+﻿using VRT.Downloaders.Extensions;
+using VRT.Downloaders.Services.Confirmation;
+using VRT.Downloaders.Services.FileSystem;
 
 namespace VRT.Downloaders.ViewModels;
 
@@ -6,26 +8,35 @@ public sealed class SettingsViewModel : BaseViewModel
 {
     private readonly IAppSettingsService _settingsService;
     private readonly IConfirmationService _confirmationService;
+    private readonly IFolderPickerService _folderPicker;
 
-    public SettingsViewModel(IAppSettingsService settingsService, IConfirmationService confirmationService)
+    public SettingsViewModel(
+        IAppSettingsService settingsService,
+        IConfirmationService confirmationService,
+        IFolderPickerService folderPicker)
     {
         _settingsService = Guard.AgainstNull(settingsService, nameof(settingsService));
 
         Title = Resources.Title_Settings;
         SaveSettingsCommand = ReactiveCommand.Create(SaveSettings, CanSaveSettings());
         ResetSettingsCommand = ReactiveCommand.CreateFromTask(ResetSettings);
-                
+        PickOutputDirectoryCommand = ReactiveCommand.CreateFromTask(PickOutputDirectory, CanPickOutputDirectory())
+            .WithDevNullExceptionHandler();            
         SetCurrentSettings(_settingsService.GetSettings());
-        _settingsService.Saved += OnSettingsSaved;        
+        _settingsService.Saved += OnSettingsSaved;
         _confirmationService = confirmationService;
+        _folderPicker = folderPicker;
+        IsFolderPickerSupported = _folderPicker.IsPickFolderSupported;
     }
 
     [Reactive] public AppSettings CurrentSettings { get; private set; }
     [Reactive] public string OutputDirectory { get; set; }
     [Reactive] public bool EnableClipboardMonitor { get; set; }
+    [Reactive] public bool IsFolderPickerSupported { get; private set; }
 
     public ICommand SaveSettingsCommand { get; }
     public ICommand ResetSettingsCommand { get; }
+    public ICommand PickOutputDirectoryCommand { get; }
 
     private void SetCurrentSettings(AppSettings settings)
     {
@@ -45,7 +56,7 @@ public sealed class SettingsViewModel : BaseViewModel
         {
             return;
         }
-        await _settingsService.ResetToDefaults();        
+        await _settingsService.ResetToDefaults();
     }
     private void SaveSettings()
     {
@@ -70,5 +81,16 @@ public sealed class SettingsViewModel : BaseViewModel
         var current = CurrentSettings;
         var toCompare = new AppSettings(OutputDirectory, EnableClipboardMonitor);
         return current != null && !toCompare.Equals(current);
+    }
+    private async Task PickOutputDirectory()
+    {
+        await _folderPicker.PickFolder()
+            .Tap(folder => OutputDirectory = folder);
+    }
+    private IObservable<bool> CanPickOutputDirectory()
+    {
+        return this
+            .WhenAnyValue(p => p.IsFolderPickerSupported)
+            .ObserveOn(RxApp.MainThreadScheduler);
     }
 }

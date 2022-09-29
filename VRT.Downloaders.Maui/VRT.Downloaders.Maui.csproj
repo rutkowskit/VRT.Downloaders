@@ -28,7 +28,7 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg"/>
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Images\download_icon.svg" Color="#512BD4" BaseSize="128,128" />
@@ -84,7 +84,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Helpers\FolderHelpers.cs">
+	    <ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
+	  </Compile>
 	  <Compile Update="Helpers\WindowHelpers.cs">
+	    <ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
+	  </Compile>
+	  <Compile Update="Platforms\Android\Partials\FolderHelpers.cs">
 	    <ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
 	  </Compile>
 	  <Compile Update="Platforms\Android\Partials\WindowHelpers.cs">
