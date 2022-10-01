@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Net.Http;
 
 namespace VRT.Downloaders.Services.Downloads
 {
@@ -21,8 +22,10 @@ namespace VRT.Downloaders.Services.Downloads
         }
 
         public async Task<Stream> Open()
-        {            
+        {
+#pragma warning disable SYSLIB0014 // Type or member is obsolete
             var req = (HttpWebRequest)WebRequest.Create(Url);
+#pragma warning restore SYSLIB0014 // Type or member is obsolete
             req.AddRange(Range.From, Range.To);
             var response = await req.GetResponseAsync().DisposeWith(_disposables);
             return response.GetResponseStream().SetDisposable(_disposables);

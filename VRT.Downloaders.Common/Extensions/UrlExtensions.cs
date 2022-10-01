@@ -34,7 +34,9 @@ namespace VRT.Downloaders
             string method = "GET",
             string origin = null, string referer = null)
         {
+#pragma warning disable SYSLIB0014 // Type or member is obsolete
             var request = WebRequest.CreateHttp(url);
+#pragma warning restore SYSLIB0014 // Type or member is obsolete
             request.Method = method;
             request.UserAgent = DefaultUserAgent;
 

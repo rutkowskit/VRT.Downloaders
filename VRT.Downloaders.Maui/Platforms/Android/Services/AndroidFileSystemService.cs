@@ -1,5 +1,6 @@
-﻿using X=Android.OS;
-using VRT.Downloaders.Services.FileSystem;
+﻿using VRT.Downloaders.Services.FileSystem;
+using AndroidApp=Android.App;
+using X = Android.OS;
 
 namespace VRT.Downloaders.Maui.Platforms.Android.Services;
 
@@ -17,9 +18,11 @@ public sealed class AndroidFileSystemService : IFileSystemService
 
     public string GetDownloadsDirectory(bool ensureCreated)
     {
+#pragma warning disable  // Type or member is obsolete
         var result = X.Environment.IsExternalStorageEmulated
             ? Path.Combine(X.Environment.ExternalStorageDirectory.AbsolutePath, X.Environment.DirectoryDownloads)
             : Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        return result;        
+        return result;
+#pragma warning restore SYSLIB0014 // Type or member is obsolete
     }
 }
