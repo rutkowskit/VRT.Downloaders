@@ -17,5 +17,6 @@ This application downloads medias from supported sources to allow the user to co
 
 
 ### Publish Release for Windows 10
+``` dotnet publish -c Release -f net6.0-windows10.0.19041.0 --force -r win10-x64 --self-contained /p:PublishSingleFile=true /p:RuntimeIdentifierOverride=win10-x64```
 
-``` dotnet publish -c Release -f net6.0-windows10.0.19041.0 --force -r win10-x64 --self-contained /p:PublishSingleFile=true /p:RuntimeIdentifierOverride=win10-x64 ```
+Replace certificate thumbprint to yours, or remove it if you do not wish to sign the package
