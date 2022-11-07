@@ -22,7 +22,7 @@ namespace VRT.Downloaders.ViewModels
                 .ObserveOn(RxApp.MainThreadScheduler));
         }
 
-        public string Name => _task.Request.Name;
+        public string Name => _task.Request.Name;        
         public string Uri => _task.Request.Uri.AbsoluteUri;
 
 

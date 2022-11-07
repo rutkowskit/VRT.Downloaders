@@ -13,6 +13,7 @@ global using System.Reactive.Linq;
 global using System.Text;
 global using System.Threading.Tasks;
 global using System.Windows.Input;
+global using VRT.Downloaders.Extensions;
 global using VRT.Downloaders.Models.Messages;
 global using VRT.Downloaders.Properties;
 global using VRT.Downloaders.Services.Configs;

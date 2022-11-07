@@ -63,17 +63,18 @@
             </Border>
             <Border Grid.Row="2" BackgroundColor="Transparent">
                 <Grid RowDefinitions="Auto,*" RowSpacing="5">
-                    <HorizontalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
                         <Label Style="{StaticResource OptionLabel}"
                                Text="Download queue" />
-                        <ImageButton WidthRequest="20" HeightRequest="20"
-                                     Margin="20,0,0,0"                                     
+                        <ImageButton WidthRequest="20" HeightRequest="20"                                     
+                                     Margin="0,0,20,0"
+                                     Grid.Column="1"
                                      BackgroundColor="Transparent"
                                      AutomationId="uxClearFinishedButton"                                                     
                                      Source="trash_icon.png"
                                      Command="{Binding Path=ClearFinishedCommand, Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}}"
                                      />
-                    </HorizontalStackLayout>
+                    </Grid>
                     
                     <CollectionView Grid.Row="1" x:Name="DownloadsListView"                
                                         ItemsSource="{Binding Downloads}"
@@ -89,7 +90,7 @@
                                         <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10">
                                             <Label Text="{Binding Name}" 
                                                FontFamily="RobotoRegular"
-                                               LineBreakMode="TailTruncation" />
+                                               LineBreakMode="TailTruncation" />                                            
                                             <Grid Grid.Row="1" 
                                               ColumnDefinitions="*,Auto"
                                               Margin="0,0,15,0">
@@ -138,8 +139,7 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </Grid>
-            </Border>
-            
+            </Border>            
         </Grid>
     </ContentPage.Content>
 </ContentPage>

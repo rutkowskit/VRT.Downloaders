@@ -12,7 +12,7 @@
         public override Result EnterState(IDownloadContext context)
         {
             return base.EnterState(context)
-                .Tap(() => context.LastErrorMessage = Reason);
+                .Tap(() => context.LastErrorMessage = Reason);                
         }
         public override Result Remove(IDownloadContext context)
         {

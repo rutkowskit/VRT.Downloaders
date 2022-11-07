@@ -1,35 +1,33 @@
 ﻿namespace VRT.Downloaders.Services.Configs
 {
-    public sealed class AppSettings : IEquatable<AppSettings>
+    public sealed class AppSettings : ValueObject
     {
         public AppSettings(
             string outputDirectory, 
-            bool enableClipboardMonitor)
+            bool enableClipboardMonitor,
+            bool enableAutoGetMedias,
+            string autoDownloadMediaTypePattern)
         {
             EnableClipboardMonitor = enableClipboardMonitor;
             OutputDirectory = outputDirectory;
+            EnableAutoGetMedias = enableAutoGetMedias;
+            AutoDownloadMediaTypePattern = autoDownloadMediaTypePattern;
         }
         public bool EnableClipboardMonitor { get; }
+        public bool EnableAutoGetMedias { get; }
         public string OutputDirectory { get; }
+        /// <summary>
+        /// Regex pattern of Type name to automaticly queue for download after getting media list
+        /// e.g. ^Audio.*?mp4 will cause automatically start downloading audio in mp4 format after media list is refreshed
+        /// </summary>
+        public string AutoDownloadMediaTypePattern { get; }
 
-        public override bool Equals(object obj)
+        protected override IEnumerable<object> GetEqualityComponents()
         {
-            return Equals(obj as AppSettings);
-        }
-
-        public bool Equals(AppSettings other)
-        {
-            return other != null &&
-                   EnableClipboardMonitor == other.EnableClipboardMonitor &&
-                   OutputDirectory == other.OutputDirectory;
-        }
-
-        public override int GetHashCode()
-        {
-            int hashCode = 949157293;
-            hashCode = hashCode * -1521134295 + EnableClipboardMonitor.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(OutputDirectory);
-            return hashCode;
+            yield return EnableClipboardMonitor;
+            yield return OutputDirectory;
+            yield return EnableAutoGetMedias;
+            yield return AutoDownloadMediaTypePattern ?? "";
         }
     }
 }

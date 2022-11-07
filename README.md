@@ -8,15 +8,27 @@ This application downloads medias from supported sources to allow the user to co
 |:-:|:-:|:-:|
 |<b>YouTube</b>| Yes | <a href="https://github.com/Tyrrrz/YoutubeExplode">YoutubeExplode</a> |
 |<b>TVP VOD</b>| No | - |
+|<b>Direct</b>| No | - |
 
-## Buidilng the Project
+## Buidilng and installation
 
-### Publish Release for Android
+### Building and installation on Android device
 
-``` dotnet publish -c Release -f net6.0-android ```
+1. Open command prompt
+1. Go to ```VRT.Downloaders.Maui``` project directory 
+1. Execute command: ``` dotnet publish -c Release -f net6.0-android ```
+1. Upload ```.\bin\Release\net6.0-android\publish\com.vrt.downloaders.maui-Signed.apk ``` file to your Android device
+1. On the android device
+    1. Open file explorer and select the folder where you uploded the file,
+    1. Tap the ```com.vrt.downloaders.maui-Signed.apk``` file,
+    1. Confirm that you want to install the app
+
+
+### Installation on Android device
+
+1. Copy 
 
 
 ### Publish Release for Windows 10
 ``` dotnet publish -c Release -f net6.0-windows10.0.19041.0 --force -r win10-x64 --self-contained /p:PublishSingleFile=true /p:RuntimeIdentifierOverride=win10-x64```
 
-Replace certificate thumbprint to yours, or remove it if you do not wish to sign the package

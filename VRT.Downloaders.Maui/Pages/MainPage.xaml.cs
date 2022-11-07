@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using System.Reactive.Linq;
 using VRT.Downloaders.Services.Configs;
 using VRT.Downloaders.ViewModels;
 
@@ -51,11 +52,16 @@ public partial class MainPage : ContentPage, IActivatableView
         var text = await Clipboard.Default.GetTextAsync();
         OnClipboardTextData(text);
     }
+    private IDisposable _delayClipboardTextTimer;
     private void OnClipboardTextData(string text)
     {
         if (string.IsNullOrWhiteSpace(text) is false)
         {
-            _viewModel.ProcesUrlCommand.Execute(text);
+            _delayClipboardTextTimer?.Dispose();
+            // very often clipboard data is processed multiple time, so delay execution to prevent it.
+            _delayClipboardTextTimer = Observable
+                .Timer(TimeSpan.FromMilliseconds(600))                
+                .Subscribe(_ => _viewModel.ProcessUrlCommand.Execute(text));                        
         }
     }
 }

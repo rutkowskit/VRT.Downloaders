@@ -48,8 +48,7 @@ public sealed class DefaultAppSettingsService : IAppSettingsService
     private bool HasChanges(AppSettings settings)
     {
         var current = GetSettings();
-        return settings.EnableClipboardMonitor != current.EnableClipboardMonitor
-            || settings.OutputDirectory != current.OutputDirectory;
+        return settings.Equals(current) is false;            
     }
 
     private string GetSettingsFilePath()
@@ -68,7 +67,7 @@ public sealed class DefaultAppSettingsService : IAppSettingsService
     private AppSettings GetDefaultSettings()
     {
         var outputDirectory = _fileSystemService.GetDownloadsDirectory(true);
-        return new AppSettings(outputDirectory, false);
+        return new AppSettings(outputDirectory, false, false, null);
     }
 
     private static AppSettings LoadSettingsFromFile(string configFilePath)

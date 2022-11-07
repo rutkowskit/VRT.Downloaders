@@ -32,7 +32,9 @@ public sealed class SettingsViewModel : BaseViewModel
     [Reactive] public AppSettings CurrentSettings { get; private set; }
     [Reactive] public string OutputDirectory { get; set; }
     [Reactive] public bool EnableClipboardMonitor { get; set; }
+    [Reactive] public bool EnableAutoGetMedias { get; set; }
     [Reactive] public bool IsFolderPickerSupported { get; private set; }
+    [Reactive] public string AutoDownloadMediaTypePattern { get; set; }
 
     public ICommand SaveSettingsCommand { get; }
     public ICommand ResetSettingsCommand { get; }
@@ -43,6 +45,8 @@ public sealed class SettingsViewModel : BaseViewModel
         CurrentSettings = settings;
         EnableClipboardMonitor = settings.EnableClipboardMonitor;
         OutputDirectory = settings.OutputDirectory;
+        EnableAutoGetMedias = settings.EnableAutoGetMedias;
+        AutoDownloadMediaTypePattern = settings.AutoDownloadMediaTypePattern;
     }
 
     private void OnSettingsSaved(object sender, AppSettings e)
@@ -60,7 +64,7 @@ public sealed class SettingsViewModel : BaseViewModel
     }
     private void SaveSettings()
     {
-        var newSettings = new AppSettings(OutputDirectory, EnableClipboardMonitor);
+        var newSettings = CreateCurrentAppSettings();
         if (!newSettings.Equals(CurrentSettings))
         {
             _settingsService.SaveSettings(newSettings);
@@ -68,10 +72,8 @@ public sealed class SettingsViewModel : BaseViewModel
     }
     private IObservable<bool> CanSaveSettings()
     {
-        return this.WhenAnyValue(
-                p => p.OutputDirectory,
-                p => p.EnableClipboardMonitor,
-                p => p.CurrentSettings)
+        return this
+            .WhenAnyPropertyChanged()
             .Throttle(TimeSpan.FromMilliseconds(200))
             .ObserveOn(RxApp.MainThreadScheduler)
             .Select(_ => HasChanges());
@@ -79,9 +81,10 @@ public sealed class SettingsViewModel : BaseViewModel
     private bool HasChanges()
     {
         var current = CurrentSettings;
-        var toCompare = new AppSettings(OutputDirectory, EnableClipboardMonitor);
+        var toCompare = CreateCurrentAppSettings();
         return current != null && !toCompare.Equals(current);
     }
+    private AppSettings CreateCurrentAppSettings() => new (OutputDirectory, EnableClipboardMonitor, EnableAutoGetMedias, AutoDownloadMediaTypePattern);
     private async Task PickOutputDirectory()
     {
         await _folderPicker.PickFolder()

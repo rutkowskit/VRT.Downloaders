@@ -21,7 +21,7 @@ public sealed class MainWindowViewModel : BaseViewModel
         ServicePointManager.DefaultConnectionLimit = 1000;
         GetMediasCommand = ReactiveCommand.CreateFromTask(GetMedias, CanGetMedias());
         DownloadMediaCommand = ReactiveCommand.CreateFromTask<MediaInfo>(DownloadMedia);
-        ProcesUrlCommand = ReactiveCommand.CreateFromTask<string>(ProcessUrl);
+        ProcessUrlCommand = ReactiveCommand.CreateFromTask<string>(ProcessUrl);
         ClearFinishedCommand = ReactiveCommand.Create(ClearFinished);
         ShowDownloadErrorCommand = ReactiveCommand.CreateFromTask<DownloadTaskProxy>(ShowDownloadError);
 
@@ -45,8 +45,14 @@ public sealed class MainWindowViewModel : BaseViewModel
             .Bind(out _downloads)
             .DisposeMany()
             .Subscribe()
-            .DisposeWith(Disposables)
-            .Discard();
+            .DisposeWith(Disposables);
+
+        this.WhenAnyValue(p => p.MediaToAutoDownload)
+            .Where(p => p is not null)
+            .Throttle(TimeSpan.FromMilliseconds(600))
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .InvokeCommand(DownloadMediaCommand)
+            .DisposeWith(Disposables);
     }
 
     private async Task ShowDownloadError(DownloadTaskProxy task)
@@ -58,13 +64,15 @@ public sealed class MainWindowViewModel : BaseViewModel
     public ReadOnlyObservableCollection<DownloadTaskProxy> Downloads => _downloads;
 
     [Reactive] public bool IsRefreshing { get; set; }
-    [Reactive] public string Uri { get; set; }    
+    [Reactive] public string Uri { get; set; }
+    [Reactive] public MediaInfo MediaToAutoDownload { get; set; }
+
     public IAppSettingsService SettingsService { get; }
     public IObservableCollection<MediaInfo> Medias { get; set; }
 
     public ICommand DownloadMediaCommand { get; }
     public ICommand GetMediasCommand { get; }
-    public ICommand ProcesUrlCommand { get; }
+    public ICommand ProcessUrlCommand { get; }
     public ICommand ClearFinishedCommand { get; }
     public ICommand ShowDownloadErrorCommand { get; }
 
@@ -88,14 +96,28 @@ public sealed class MainWindowViewModel : BaseViewModel
             // call it after await to avoid Dispatcher problems when updating fields connected with binded properties
             await getMediaResult
                 .Tap(medias => _medias.AddRange(medias))
-                .OnFailure(error => _mediator.Publish(new NotifyMessage("Error", error)));
+                .OnFailure(error => _mediator.Publish(new NotifyMessage("Error", error)))
+                .Bind(GetMediaToAutoDownload)
+                .Tap(media => MediaToAutoDownload = media); ;           
         }
         finally
         {
             IsRefreshing = false;
         }
-
     }
+    private IObservable<bool> CanGetMedias()
+    {
+        return this.WhenValueChanged(p => p.IsRefreshing)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Select(isRefreshing => isRefreshing is false);
+    }
+    private Result<MediaInfo> GetMediaToAutoDownload(IReadOnlyCollection<MediaInfo> medias)
+    {
+        var result = SettingsService.GetSettings().AutoDownloadMediaTypePattern.SuccessIfNotEmpty()
+            .Bind(medias.FindFirstByDescription);
+        return result;
+    }
+
     private async Task<Result<IMediaService>> GetMediaService(string url)
     {
         if (string.IsNullOrWhiteSpace(url))
@@ -111,12 +133,7 @@ public sealed class MainWindowViewModel : BaseViewModel
         }
         return Result.Success<IMediaService>(new DirectMediaService());
     }
-    private IObservable<bool> CanGetMedias()
-    {
-        return this.WhenValueChanged(p => p.IsRefreshing)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Select(isRefreshing => isRefreshing is false);
-    }
+    
     private void ClearFinished()
     {
         Downloads
@@ -133,7 +150,14 @@ public sealed class MainWindowViewModel : BaseViewModel
             {
                 Uri = url.AbsoluteUri;
                 _mediator.Publish(new BringToFrontMessage("Main"));
-            });
+            })
+            .TapIf(ShouldAutoRefreshMediaList(), GetMedias);
+    }
+
+    private bool ShouldAutoRefreshMediaList()
+    {
+        return SettingsService.GetSettings().EnableAutoGetMedias
+            && string.IsNullOrEmpty(Uri) is false;
     }
 
     private Result<Uri> CheckIfMediaUrlHasChanged(Uri url)
