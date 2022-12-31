@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace VRT.Downloaders.Services.Medias;
+﻿namespace VRT.Downloaders.Services.Medias;
 
 public sealed class MediaInfo
 {
-    public string Title { get; set; }
-    public Uri Url { get; set; }
-    public string Extension { get; set; }
-    public string FormatDescription { get; set; }
-    public string OutputFileName { get; set; }
+    required public string Title { get; init; }
+    required public Uri Url { get; init; }
+    required public string Extension { get; init; }
+    public string? FormatDescription { get; set; }    
+    public string? OutputFileName { get; set; }
 }

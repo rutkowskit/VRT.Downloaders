@@ -1,16 +1,14 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
-namespace VRT.Downloaders
+namespace VRT.Downloaders;
+
+public static class Guard
 {
-    public static class Guard
+    public static T AgainstNull<T>(this T? field,
+        [CallerArgumentExpression("field")] string? fieldName = null,
+        string? message = null)
+        where T : class
     {
-        public static T AgainstNull<T>(this T field, 
-            [CallerArgumentExpression("field")] string fieldName = null, 
-            string message = null)
-            where T : class
-        {
-            return field ?? throw new ArgumentNullException(fieldName, message);
-        }
+        return field ?? throw new ArgumentNullException(fieldName, message);
     }
 }

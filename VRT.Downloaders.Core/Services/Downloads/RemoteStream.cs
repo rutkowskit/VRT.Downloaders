@@ -1,34 +1,33 @@
 ﻿using System.IO;
 using System.Net.Http;
 
-namespace VRT.Downloaders.Services.Downloads
+namespace VRT.Downloaders.Services.Downloads;
+
+public sealed class RemoteStream : IDisposable
 {
-    public sealed class RemoteStream : IDisposable
+    private readonly CompositeDisposable _disposables;
+    public RemoteStream(Uri url, FileByteRange range)
     {
-        private readonly CompositeDisposable _disposables;
-        public RemoteStream(Uri url, FileByteRange range)
-        {
-            _disposables = new CompositeDisposable();
-            Url = url;
-            Range = range;
-        }
+        _disposables = new CompositeDisposable();
+        Url = url;
+        Range = range;
+    }
 
-        public Uri Url { get; }
-        public FileByteRange Range { get; }
+    public Uri Url { get; }
+    public FileByteRange Range { get; }
 
-        public void Dispose()
-        {
-            _disposables.Dispose();
-        }
+    public void Dispose()
+    {
+        _disposables.Dispose();
+    }
 
-        public async Task<Stream> Open()
-        {
+    public async Task<Stream> Open()
+    {
 #pragma warning disable SYSLIB0014 // Type or member is obsolete
-            var req = (HttpWebRequest)WebRequest.Create(Url);
+        var req = (HttpWebRequest)WebRequest.Create(Url);
 #pragma warning restore SYSLIB0014 // Type or member is obsolete
-            req.AddRange(Range.From, Range.To);
-            var response = await req.GetResponseAsync().DisposeWith(_disposables);
-            return response.GetResponseStream().SetDisposable(_disposables);
-        }
+        req.AddRange(Range.From, Range.To);
+        var response = await req.GetResponseAsync().DisposeWith(_disposables);
+        return response.GetResponseStream().SetDisposable(_disposables);
     }
 }

@@ -11,7 +11,7 @@ public static class MediaInfoExtensions
         Guard.AgainstNull(medias);
         var result = medias
             .Where(m => m?.FormatDescription is not null)
-            .Where(m => Regex.IsMatch(m.FormatDescription, regexPattern, RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase))
+            .Where(m => Regex.IsMatch(m.FormatDescription!, regexPattern, RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase))
             .FirstOrDefault();
         return result ?? Result.Failure<MediaInfo>("Media not found");
     }

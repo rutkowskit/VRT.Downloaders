@@ -4,7 +4,7 @@ using MediatR;
 namespace VRT.Downloaders.Maui;
 public static class MauiProgram
 {
-    public static MauiApp CreateMauiApp(Action<MauiAppBuilder> setup = null)
+    public static MauiApp CreateMauiApp(Action<MauiAppBuilder>? setup = null)
     {
         var builder = MauiApp.CreateBuilder();
         builder

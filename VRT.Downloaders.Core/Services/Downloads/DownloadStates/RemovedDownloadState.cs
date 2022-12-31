@@ -1,7 +1,6 @@
-﻿namespace VRT.Downloaders.Services.Downloads.DownloadStates
+﻿namespace VRT.Downloaders.Services.Downloads.DownloadStates;
+
+public sealed class RemovedDownloadState : BaseDownloadState
 {
-    public sealed class RemovedDownloadState : BaseDownloadState
-    {
-        public override States State => States.Removed;
-    }
+    public override States State => States.Removed;
 }

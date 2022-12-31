@@ -1,15 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using VRT.Downloaders.ViewModels;
 
-namespace VRT.Downloaders
+namespace VRT.Downloaders;
+
+public static partial class ServiceCollectionExtensions
 {
-    public static partial class ServiceCollectionExtensions
+    public static IServiceCollection AddViewModels(this IServiceCollection services)
     {
-        public static IServiceCollection AddViewModels(this IServiceCollection services)
-        {
-            return services
-                .AddSingleton<MainWindowViewModel>()
-                .AddSingleton<SettingsViewModel>();
-        }
+        return services
+            .AddSingleton<MainWindowViewModel>()
+            .AddSingleton<SettingsViewModel>();
     }
 }

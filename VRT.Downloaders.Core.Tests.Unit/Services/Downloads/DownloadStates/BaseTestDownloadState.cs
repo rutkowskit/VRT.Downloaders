@@ -17,7 +17,7 @@ namespace VRT.Downloaders.Services.Downloads.DownloadStates
             context.CurrentState.Should()
                 .NotBeNull("State should be set")
                 .And.BeOfType<TDownloadState>();
-            context.State.Should().Be(context.CurrentState.State, "Transition should set context state");
+            context.State.Should().Be(context.CurrentState!.State, "Transition should set context state");
             context.CanCancel.Should().Be(context.CurrentState.CanCancel, "Transition should set correct CanCancel flag");
             context.CanRemove.Should().Be(context.CurrentState.CanRemove, "Transition should set correct CanRemove flag");
             context.Request.Should().BeNull("No test context request is available by default");
@@ -30,10 +30,10 @@ namespace VRT.Downloaders.Services.Downloads.DownloadStates
             var context = CreateContextWithSut();
             var prevState = context.CurrentState;
 
-            context.TransitionToState(context.CurrentState);
+            context.TransitionToState(context.CurrentState!);
 
             context.AssertLastError(Resources.Error_StateAlreadySet_StateName.Format(context.State));
-            prevState.State.Should().Be(context.State);
+            prevState!.State.Should().Be(context.State);
         }
 
         private protected virtual FakeDownloadContext CreateContextWithSut()

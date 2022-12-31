@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.IO;
 using VRT.Downloaders.Services.FileSystem;
 
 namespace VRT.Downloaders.Services.Configs;
@@ -10,7 +9,7 @@ public sealed class DefaultAppSettingsService : IAppSettingsService
 
     private readonly string _settingsFilePath;
     private readonly IFileSystemService _fileSystemService;
-    private AppSettings _currentSettings;
+    private AppSettings? _currentSettings;
 
     public event EventHandler<AppSettings> Saved;
 
@@ -48,7 +47,7 @@ public sealed class DefaultAppSettingsService : IAppSettingsService
     private bool HasChanges(AppSettings settings)
     {
         var current = GetSettings();
-        return settings.Equals(current) is false;            
+        return settings.Equals(current) is false;
     }
 
     private string GetSettingsFilePath()
@@ -60,7 +59,7 @@ public sealed class DefaultAppSettingsService : IAppSettingsService
     private AppSettings LoadSettings(string configFilePath)
     {
         return File.Exists(configFilePath)
-            ? LoadSettingsFromFile(configFilePath)
+            ? LoadSettingsFromFile(configFilePath) ?? GetDefaultSettings()
             : GetDefaultSettings();
     }
 
@@ -70,7 +69,7 @@ public sealed class DefaultAppSettingsService : IAppSettingsService
         return new AppSettings(outputDirectory, false, false, null);
     }
 
-    private static AppSettings LoadSettingsFromFile(string configFilePath)
+    private static AppSettings? LoadSettingsFromFile(string configFilePath)
     {
         var content = File.ReadAllText(configFilePath, Encoding.UTF8);
         return JsonConvert.DeserializeObject<AppSettings>(content);

@@ -2,24 +2,23 @@
 using Microsoft.Extensions.DependencyInjection;
 using VRT.Downloaders.Services.FileSystem;
 
-namespace VRT.Downloaders
-{
-    partial class ServiceCollectionExtensions
-    {
-        public static IServiceCollection AddAppConfig(this IServiceCollection services)
-        {
-            return services
-                .AddSingleton(provider => InitConfiguration(provider))
-                .AddSingleton<IAppSettingsService, DefaultAppSettingsService>();
-        }
-        private static IConfiguration InitConfiguration(IServiceProvider provider)
-        {
-            var fsService = provider.GetRequiredService<IFileSystemService>();
+namespace VRT.Downloaders;
 
-            return new ConfigurationBuilder()
-             .SetBasePath(fsService.GetCurrentDirectory())
-             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-             .Build();
-        }
+partial class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddAppConfig(this IServiceCollection services)
+    {
+        return services
+            .AddSingleton(provider => InitConfiguration(provider))
+            .AddSingleton<IAppSettingsService, DefaultAppSettingsService>();
+    }
+    private static IConfiguration InitConfiguration(IServiceProvider provider)
+    {
+        var fsService = provider.GetRequiredService<IFileSystemService>();
+
+        return new ConfigurationBuilder()
+         .SetBasePath(fsService.GetCurrentDirectory())
+         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+         .Build();
     }
 }

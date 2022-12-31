@@ -11,12 +11,12 @@ public sealed class PercentIntToDoubleConverter : BaseConverter<int, double>
     public override double DefaultConvertReturnValue { get; set; }
     public override int DefaultConvertBackReturnValue { get; set; }
 
-    public override int ConvertBackTo(double value, CultureInfo culture)
+    public override int ConvertBackTo(double value, CultureInfo? culture)
     {
         return (int)value * 100;
     }
 
-    public override double ConvertFrom(int value, CultureInfo culture)
+    public override double ConvertFrom(int value, CultureInfo? culture)
     {
         return value / (double)100;
     }

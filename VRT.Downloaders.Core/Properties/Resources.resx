@@ -147,6 +147,9 @@
   <data name="Error_TaskCannotBeNull" xml:space="preserve">
     <value>Download task cannot be null</value>
   </data>
+  <data name="Error_UnknownError" xml:space="preserve">
+    <value>Unknown error occured</value>
+  </data>
   <data name="Info_DownloadCanceled" xml:space="preserve">
     <value>Download canceled</value>
   </data>

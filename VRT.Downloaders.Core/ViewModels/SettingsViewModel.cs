@@ -1,5 +1,4 @@
-﻿using VRT.Downloaders.Extensions;
-using VRT.Downloaders.Services.Confirmation;
+﻿using VRT.Downloaders.Services.Confirmation;
 using VRT.Downloaders.Services.FileSystem;
 
 namespace VRT.Downloaders.ViewModels;
@@ -21,20 +20,20 @@ public sealed class SettingsViewModel : BaseViewModel
         SaveSettingsCommand = ReactiveCommand.Create(SaveSettings, CanSaveSettings());
         ResetSettingsCommand = ReactiveCommand.CreateFromTask(ResetSettings);
         PickOutputDirectoryCommand = ReactiveCommand.CreateFromTask(PickOutputDirectory, CanPickOutputDirectory())
-            .WithDevNullExceptionHandler();            
+            .WithDevNullExceptionHandler();
         SetCurrentSettings(_settingsService.GetSettings());
-        _settingsService.Saved += OnSettingsSaved;
+        _settingsService.Saved += OnSettingsSaved!;
         _confirmationService = confirmationService;
         _folderPicker = folderPicker;
         IsFolderPickerSupported = _folderPicker.IsPickFolderSupported;
     }
 
-    [Reactive] public AppSettings CurrentSettings { get; private set; }
-    [Reactive] public string OutputDirectory { get; set; }
+    [Reactive] public AppSettings? CurrentSettings { get; private set; }
+    [Reactive] public string? OutputDirectory { get; set; }
     [Reactive] public bool EnableClipboardMonitor { get; set; }
     [Reactive] public bool EnableAutoGetMedias { get; set; }
     [Reactive] public bool IsFolderPickerSupported { get; private set; }
-    [Reactive] public string AutoDownloadMediaTypePattern { get; set; }
+    [Reactive] public string? AutoDownloadMediaTypePattern { get; set; }
 
     public ICommand SaveSettingsCommand { get; }
     public ICommand ResetSettingsCommand { get; }
@@ -84,7 +83,12 @@ public sealed class SettingsViewModel : BaseViewModel
         var toCompare = CreateCurrentAppSettings();
         return current != null && !toCompare.Equals(current);
     }
-    private AppSettings CreateCurrentAppSettings() => new (OutputDirectory, EnableClipboardMonitor, EnableAutoGetMedias, AutoDownloadMediaTypePattern);
+    private AppSettings CreateCurrentAppSettings()
+    {
+        var result = new AppSettings(OutputDirectory!, EnableClipboardMonitor, EnableAutoGetMedias, AutoDownloadMediaTypePattern);
+        return result;
+    }
+        
     private async Task PickOutputDirectory()
     {
         await _folderPicker.PickFolder()

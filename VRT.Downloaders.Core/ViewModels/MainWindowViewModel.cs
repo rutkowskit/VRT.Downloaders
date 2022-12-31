@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using VRT.Downloaders.Extensions;
 using VRT.Downloaders.Services.Navigation;
 
 namespace VRT.Downloaders.ViewModels;
@@ -57,15 +58,15 @@ public sealed class MainWindowViewModel : BaseViewModel
 
     private async Task ShowDownloadError(DownloadTaskProxy task)
     {
-        var request = new ShowErrorRequest(task.LastErrorMessage);
+        var request = new ShowErrorRequest(task.LastErrorMessage ?? Resources.Error_UnknownError);
         await _mediator.Send(request);
     }
 
     public ReadOnlyObservableCollection<DownloadTaskProxy> Downloads => _downloads;
 
     [Reactive] public bool IsRefreshing { get; set; }
-    [Reactive] public string Uri { get; set; }
-    [Reactive] public MediaInfo MediaToAutoDownload { get; set; }
+    [Reactive] public string? Uri { get; set; }
+    [Reactive] public MediaInfo? MediaToAutoDownload { get; set; }
 
     public IAppSettingsService SettingsService { get; }
     public IObservableCollection<MediaInfo> Medias { get; set; }
@@ -89,12 +90,13 @@ public sealed class MainWindowViewModel : BaseViewModel
         try
         {
             IsRefreshing = true;
-            var getMediaResult = await GetMediaService(Uri)
-                .BindTry(mediaService => mediaService.GetAvailableMedias(Uri))
+            var uri = Uri!;
+            var getMediaResult = await GetMediaService(uri)
+                .BindTry(mediaService => mediaService.GetAvailableMedias(uri))
                 .Tap(medias => medias.SetDefaultOutputFileName());
 
             // call it after await to avoid Dispatcher problems when updating fields connected with binded properties
-            await getMediaResult
+            await getMediaResult                
                 .Tap(medias => _medias.AddRange(medias))
                 .OnFailure(error => _mediator.Publish(new NotifyMessage("Error", error)))
                 .Bind(GetMediaToAutoDownload)
@@ -107,13 +109,15 @@ public sealed class MainWindowViewModel : BaseViewModel
     }
     private IObservable<bool> CanGetMedias()
     {
-        return this.WhenValueChanged(p => p.IsRefreshing)
+        return this
+            .WhenAnyValue(p => p.IsRefreshing, p => p.Uri)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Select(isRefreshing => isRefreshing is false);
+            .Select(t => t.Item1 is false && t.Item2 is not null);
     }
     private Result<MediaInfo> GetMediaToAutoDownload(IReadOnlyCollection<MediaInfo> medias)
     {
-        var result = SettingsService.GetSettings().AutoDownloadMediaTypePattern.SuccessIfNotEmpty()
+        var result = Result.Success(SettingsService.GetSettings())
+            .Bind(s => s.AutoDownloadMediaTypePattern.NotEmpty())            
             .Bind(medias.FindFirstByDescription);
         return result;
     }

@@ -1,11 +1,10 @@
-﻿namespace VRT.Downloaders.Services.Downloads.DownloadStates
+﻿namespace VRT.Downloaders.Services.Downloads.DownloadStates;
+
+public abstract class BaseRemovableDownloadState : BaseDownloadState
 {
-    public abstract class BaseRemovableDownloadState : BaseDownloadState
+    public override bool CanRemove => true;
+    public override Result Remove(IDownloadContext context)
     {
-        public override bool CanRemove => true;
-        public override Result Remove(IDownloadContext context)
-        {
-            return Transition(context, new RemovedDownloadState());
-        }
+        return Transition(context, new RemovedDownloadState());
     }
 }

@@ -35,7 +35,7 @@ public sealed class DownloadingWorker : IDisposable
     private async Task StartDownloadingDeamon()
     {
         var downloadTasks = new BlockingList<Task<Result<string>>>();
-        Task<Result<IReadOnlyCollection<string>>> downloadTask = null;
+        Task<Result<IReadOnlyCollection<string>>>? downloadTask = null;
         while (true)
         {
             //TODO: Add maksimum concurrent downloads download task into worker settings

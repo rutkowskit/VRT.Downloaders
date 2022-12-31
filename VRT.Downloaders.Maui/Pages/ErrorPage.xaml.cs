@@ -11,7 +11,7 @@ public partial class ErrorPage : ContentPage
     {
         base.OnNavigatedFrom(args);
     }
-    public string ErrorMessage { get; set; }
+    public string? ErrorMessage { get; set; }
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {           
         uxErrorField.Text = ErrorMessage;

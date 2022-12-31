@@ -8,6 +8,7 @@ public partial class MainPage : ContentPage, IActivatableView
 {
     private readonly MainWindowViewModel _viewModel;
     private readonly IAppSettingsService _settingsService;
+    private IDisposable? _delayClipboardTextTimer;
 
     public MainPage(MainWindowViewModel viewModel, IAppSettingsService settingsService)
     {
@@ -15,8 +16,8 @@ public partial class MainPage : ContentPage, IActivatableView
         BindingContext = viewModel;
         _viewModel = viewModel;
         _settingsService = settingsService;
-        Loaded += MainPage_Loaded;
-        _settingsService.Saved += OnSettingsSaved;
+        Loaded += MainPage_Loaded!;
+        _settingsService.Saved += OnSettingsSaved!;
     }
 
     private void OnSettingsSaved(object sender, AppSettings e)
@@ -31,11 +32,11 @@ public partial class MainPage : ContentPage, IActivatableView
     {
         if (settings.EnableClipboardMonitor)
         {
-            Clipboard.ClipboardContentChanged += OnClipboardContentChanged;
+            Clipboard.ClipboardContentChanged += OnClipboardContentChanged!;
         }
         else
         {
-            Clipboard.ClipboardContentChanged -= OnClipboardContentChanged;
+            Clipboard.ClipboardContentChanged -= OnClipboardContentChanged!;
         }
         IsClipboardMonitorEnabled = settings.EnableClipboardMonitor;
     }
@@ -52,8 +53,8 @@ public partial class MainPage : ContentPage, IActivatableView
         var text = await Clipboard.Default.GetTextAsync();
         OnClipboardTextData(text);
     }
-    private IDisposable _delayClipboardTextTimer;
-    private void OnClipboardTextData(string text)
+    
+    private void OnClipboardTextData(string? text)
     {
         if (string.IsNullOrWhiteSpace(text) is false)
         {

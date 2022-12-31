@@ -1,9 +1,8 @@
-﻿namespace VRT.Downloaders.Services.FileSystem
+﻿namespace VRT.Downloaders.Services.FileSystem;
+
+public interface IFileSystemService
 {
-    public interface IFileSystemService
-    {
-        string GetCurrentDirectory();
-        string GetAppDataDirectory(bool ensureCreated);
-        string GetDownloadsDirectory(bool ensureCreated);
-    }
+    string GetCurrentDirectory();
+    string GetAppDataDirectory(bool ensureCreated);
+    string GetDownloadsDirectory(bool ensureCreated);
 }

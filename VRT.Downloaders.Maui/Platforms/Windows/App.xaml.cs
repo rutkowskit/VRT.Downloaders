@@ -36,14 +36,14 @@ namespace VRT.Downloaders.Maui.WinUI
 
         private AppWindow GetAppWindow()
         {
-            var mainWnd = Application.Windows[0].Handler.PlatformView as MauiWinUIWindow;
-            var windowId = Win32Interop.GetWindowIdFromWindow(mainWnd.WindowHandle);
+            var mainWnd = Application.Windows[0].Handler!.PlatformView as MauiWinUIWindow;
+            var windowId = Win32Interop.GetWindowIdFromWindow(mainWnd!.WindowHandle);
             var appWindow = AppWindow.GetFromWindowId(windowId);
             return appWindow;
         }
         private static PointInt32 GetRelativeMidPosition()
         {
-            var winSize = Microsoft.Maui.Devices.DeviceDisplay.MainDisplayInfo;
+            var winSize = DeviceDisplay.MainDisplayInfo;
             var positionX = (int)winSize.Width / 2 - DefaultSize.Width / 2;
             var positionY = (int)winSize.Height / 2 - DefaultSize.Height / 2;
             return positionX < 0 || positionY < 0

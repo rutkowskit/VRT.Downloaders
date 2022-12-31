@@ -9,14 +9,14 @@ public sealed class IsErrorDownloadStateConverter
     public override bool DefaultConvertReturnValue { get; set; }
     public override BaseDownloadState.States DefaultConvertBackReturnValue { get; set; }
 
-    public override BaseDownloadState.States ConvertBackTo(bool value, CultureInfo culture)
+    public override BaseDownloadState.States ConvertBackTo(bool value, CultureInfo? culture)
     {
         return value
             ? BaseDownloadState.States.Error
             : DefaultConvertBackReturnValue;
     }
 
-    public override bool ConvertFrom(BaseDownloadState.States value, CultureInfo culture)
+    public override bool ConvertFrom(BaseDownloadState.States value, CultureInfo? culture)
     {
         return value == BaseDownloadState.States.Error;
     }

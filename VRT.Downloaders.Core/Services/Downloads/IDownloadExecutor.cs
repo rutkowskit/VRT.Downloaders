@@ -1,8 +1,7 @@
-﻿namespace VRT.Downloaders.Services.Downloads
+﻿namespace VRT.Downloaders.Services.Downloads;
+
+public interface IDownloadExecutor
 {
-    public interface IDownloadExecutor
-    {
-        Result Cancel();
-        Task<Result> Download(IDownloadContext task);
-    }
+    Result Cancel();
+    Task<Result> Download(IDownloadContext task);
 }

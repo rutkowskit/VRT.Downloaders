@@ -1,23 +1,22 @@
 ﻿using System.IO;
 using System.Threading;
 
-namespace VRT.Downloaders.Services.Downloads
+namespace VRT.Downloaders.Services.Downloads;
+
+public static class StreamExtensions
 {
-    public static class StreamExtensions
+    public static async Task CopyTo(this Stream sourceStream, Stream outputStream,
+       SemaphoreSlim writeSemaphore, long outputStreamPosition)
     {
-        public static async Task CopyTo(this Stream sourceStream, Stream outputStream,
-           SemaphoreSlim writeSemaphore, long outputStreamPosition)
+        await writeSemaphore.WaitAsync();
+        try
         {
-            await writeSemaphore.WaitAsync();
-            try
-            {
-                outputStream.Position = outputStreamPosition;
-                await sourceStream.CopyToAsync(outputStream, 1024);
-            }
-            finally
-            {
-                writeSemaphore.Release().Discard();
-            }
+            outputStream.Position = outputStreamPosition;
+            await sourceStream.CopyToAsync(outputStream, 1024);
+        }
+        finally
+        {
+            writeSemaphore.Release().Discard();
         }
     }
 }
