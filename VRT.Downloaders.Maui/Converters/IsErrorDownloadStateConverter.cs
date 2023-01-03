@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Maui.Converters;
 using System.Globalization;
-using VRT.Downloaders.Services.Downloads.DownloadStates;
+using VRT.Downloaders.Common.DownloadStates;
 
 namespace VRT.Downloaders.Maui.Converters;
 public sealed class IsErrorDownloadStateConverter

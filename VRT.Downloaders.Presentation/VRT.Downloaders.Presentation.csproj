@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\VRT.Downloaders.Infrastructure\VRT.Downloaders.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

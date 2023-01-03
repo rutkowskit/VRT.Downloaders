@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
+using VRT.Downloaders.Common.Requests;
 using VRT.Downloaders.Maui.Helpers;
-using VRT.Downloaders.Services.Navigation;
 
 namespace VRT.Downloaders.Maui.Events;
 internal class PickFolderRequestHandler : IRequestHandler<PickFolderRequest, Result<string>>

@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
+using VRT.Downloaders.Common.Abstractions;
 using VRT.Downloaders.Maui.Platforms.Android.Services;
-using VRT.Downloaders.Services.FileSystem;
 
 namespace VRT.Downloaders.Maui
 {

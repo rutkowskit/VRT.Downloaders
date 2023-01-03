@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using VRT.Downloaders.Services.Navigation;
 using CSharpFunctionalExtensions;
 using VRT.Downloaders.Maui.Pages;
+using VRT.Downloaders.Common.Requests;
 
 namespace VRT.Downloaders.Maui.Events;
 public sealed class ShowErrorRequestHandler : IRequestHandler<ShowErrorRequest,Result>

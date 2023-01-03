@@ -1,4 +1,6 @@
-﻿namespace VRT.Downloaders;
+﻿using VRT.Downloaders.Common.Collections;
+
+namespace VRT.Downloaders;
 
 public static partial class UrlExtensions
 {
@@ -13,14 +15,14 @@ public static partial class UrlExtensions
         if (size <= 0)
             return Result.Failure<FileByteRange[]>(Resources.Error_SizeMustBeGreaterThanZero);
 
-        const int bufferSize = 5 * 1024 * 1024;
+        const int BufferSize = 5 * 1024 * 1024;
         var remainingSize = size;
         var partitions = new List<FileByteRange>();
         long from = 0;
         while (remainingSize > 0)
         {
-            var partitionSize = remainingSize > bufferSize
-                ? bufferSize
+            var partitionSize = remainingSize > BufferSize
+                ? BufferSize
                 : remainingSize;
             var to = from + partitionSize;
             partitions.Add(new FileByteRange(from, to));

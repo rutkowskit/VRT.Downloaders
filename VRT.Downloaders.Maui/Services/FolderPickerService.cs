@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
+using VRT.Downloaders.Common.Abstractions;
 using VRT.Downloaders.Maui.Helpers;
-using VRT.Downloaders.Services.FileSystem;
 
 namespace VRT.Downloaders.Maui.Services;
 internal sealed class FolderPickerService : IFolderPickerService

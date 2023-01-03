@@ -1,6 +1,6 @@
-﻿using VRT.Downloaders.Maui.Pages;
-using VRT.Downloaders.Services.Confirmation;
-using VRT.Downloaders.ViewModels;
+﻿using VRT.Downloaders.Common.Abstractions;
+using VRT.Downloaders.Maui.Pages;
+using VRT.Downloaders.Presentation.ViewModels;
 
 namespace VRT.Downloaders.Maui;
 public partial class AppShell : Shell, IConfirmationService
@@ -20,8 +20,8 @@ public partial class AppShell : Shell, IConfirmationService
     }
 
     public async Task<bool> Confirm(string message, string title)
-    {        
-        bool answer = await DisplayAlert(title, message, "Yes", "No");            
-        return answer;            
+    {
+        bool answer = await DisplayAlert(title, message, "Yes", "No");
+        return answer;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using MediatR;
-using VRT.Downloaders.Models.Messages;
+using VRT.Downloaders.Common.Messages;
 
 namespace VRT.Downloaders.Maui.Events;
 internal class NotifyMessageHandler : INotificationHandler<NotifyMessage>

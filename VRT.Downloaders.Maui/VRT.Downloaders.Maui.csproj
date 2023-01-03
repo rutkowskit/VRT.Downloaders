@@ -100,7 +100,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\VRT.Downloaders.Core\VRT.Downloaders.Core.csproj" />
+	  <ProjectReference Include="..\VRT.Downloaders.Presentation\VRT.Downloaders.Presentation.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>	  

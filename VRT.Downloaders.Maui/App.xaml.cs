@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
-using VRT.Downloaders.Models.Messages;
-using VRT.Downloaders.Services.Downloads;
+using VRT.Downloaders.Common.Messages;
+using VRT.Downloaders.Workers;
 
 namespace VRT.Downloaders.Maui;
 
@@ -23,8 +23,7 @@ public partial class App : Application
             .Ensure(EnsurePermissionGranted<Permissions.StorageRead>)
             .Ensure(EnsurePermissionGranted<Permissions.NetworkState>)
             .Tap(() => StartJobs(_services))
-            .OnFailure(() => Environment.Exit(0));
-
+            .TapError(() => Environment.Exit(0));
     }
     private static async Task<Result> EnsurePermissionGranted<TPermission>()
         where TPermission : Permissions.BasePermission, new()

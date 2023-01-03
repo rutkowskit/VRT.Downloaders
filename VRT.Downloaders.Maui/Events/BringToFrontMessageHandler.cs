@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VRT.Downloaders.Common.Messages;
 using VRT.Downloaders.Maui.Helpers;
-using VRT.Downloaders.Models.Messages;
 
 namespace VRT.Downloaders.Maui.Events;
 internal sealed class BringToFrontMessageHandler

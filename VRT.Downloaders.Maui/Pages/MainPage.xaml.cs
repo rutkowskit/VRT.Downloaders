@@ -1,7 +1,8 @@
 ﻿using ReactiveUI;
 using System.Reactive.Linq;
-using VRT.Downloaders.Services.Configs;
-using VRT.Downloaders.ViewModels;
+using VRT.Downloaders.Common.Abstractions;
+using VRT.Downloaders.Common.Models;
+using VRT.Downloaders.Presentation.ViewModels;
 
 namespace VRT.Downloaders.Maui.Pages;
 public partial class MainPage : ContentPage, IActivatableView
@@ -53,7 +54,7 @@ public partial class MainPage : ContentPage, IActivatableView
         var text = await Clipboard.Default.GetTextAsync();
         OnClipboardTextData(text);
     }
-    
+
     private void OnClipboardTextData(string? text)
     {
         if (string.IsNullOrWhiteSpace(text) is false)
@@ -61,8 +62,8 @@ public partial class MainPage : ContentPage, IActivatableView
             _delayClipboardTextTimer?.Dispose();
             // very often clipboard data is processed multiple time, so delay execution to prevent it.
             _delayClipboardTextTimer = Observable
-                .Timer(TimeSpan.FromMilliseconds(600))                
-                .Subscribe(_ => _viewModel.ProcessUrlCommand.Execute(text));                        
+                .Timer(TimeSpan.FromMilliseconds(600))
+                .Subscribe(_ => _viewModel.ProcessUrlCommand.Execute(text));
         }
     }
 }
