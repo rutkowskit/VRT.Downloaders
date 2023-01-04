@@ -1,9 +1,5 @@
-﻿using Xunit;
-using FluentAssertions;
-using VRT.Downloaders.Properties;
-using System.Threading.Tasks;
-using static VRT.Downloaders.Common.DownloadStates.BaseDownloadState;
-using VRT.Downloaders.Fakes;
+﻿using VRT.Downloaders.Properties;
+using Xunit;
 
 namespace VRT.Downloaders.Common.DownloadStates;
 

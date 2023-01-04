@@ -10,9 +10,9 @@ public sealed class DownloadQueueService : IDownloadQueueService, IDisposable
     public static readonly string DownloadQueueTasksStateKey = "State_DownloadQueueTasks";
     private readonly SourceCache<DownloadTask, string> _downloads;
     private readonly CompositeDisposable _disposables;
-    private readonly IAppStateService _appStateService;
+    private readonly IAppStateService? _appStateService;
     private readonly SemaphoreSlim _addTaskSemaphore;
-    public DownloadQueueService(IAppStateService appStateService)
+    public DownloadQueueService(IAppStateService? appStateService=null)
     {
         _addTaskSemaphore = new SemaphoreSlim(1, 1);
         _disposables = new CompositeDisposable();
@@ -25,7 +25,7 @@ public sealed class DownloadQueueService : IDownloadQueueService, IDisposable
 
     public IObservableCache<DownloadTask, string> LiveDownloads { get; }
 
-    public async Task<Result> AddDownloadTask(DownloadRequest request)
+    public async Task<Result<DownloadTask>> AddDownloadTask(DownloadRequest request)
     {
         var result = Result.SuccessIf(request is not null, Resources.Error_TaskCannotBeNull);
         try
@@ -61,7 +61,7 @@ public sealed class DownloadQueueService : IDownloadQueueService, IDisposable
     }
     private void RestoreDownloadQueueState()
     {
-        if (_appStateService == null || _downloads == null)
+        if (_appStateService is null || _downloads is null)
         {
             return;
         }
@@ -72,7 +72,7 @@ public sealed class DownloadQueueService : IDownloadQueueService, IDisposable
         {
             RemoveFromCacheWhenStateChangedToRemoved(_downloads, task);
             _downloads.AddOrUpdate(task);
-        }
+        }        
     }
 
     private static Result<DownloadRequest> EnsureNotInCache(ISourceCache<DownloadTask, string> cache, DownloadRequest request)
@@ -87,7 +87,7 @@ public sealed class DownloadQueueService : IDownloadQueueService, IDisposable
     {
         task.WhenAnyValue(v => v.State)
             .Where(v => v is BaseDownloadState.States.Removed)
-            .Subscribe(v => cache.Remove(task))            
+            .Subscribe(v => cache.Remove(task))
             .Discard();
-    }
+    }    
 }

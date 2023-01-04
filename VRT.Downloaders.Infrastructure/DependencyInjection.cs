@@ -29,7 +29,7 @@ public static class DependencyInjection
             .AddSingleton<IMediaService, TvpVodMediaService>()
             .AddSingleton<IAppStateService, AppStateService>()
             .AddSingleton<IConfirmationService, AlwaysTrueConfirmationService>()
-            .AddSingleton<IDownloadExecutorService, DownloadExecutorService>()
+            .AddTransientWithAbstractFactory<IDownloadExecutorService,DownloadExecutorService>()            
             .AddMediatR(typeof(DependencyInjection).Assembly);
     }
 

@@ -1,7 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using FluentAssertions;
-using VRT.Downloaders.Fakes;
-using Xunit;
+﻿using Xunit;
 
 namespace VRT.Downloaders.Common.DownloadStates;
 

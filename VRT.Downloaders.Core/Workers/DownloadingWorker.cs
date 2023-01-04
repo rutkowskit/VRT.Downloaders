@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
+using VRT.Assets.Application.Common.Abstractions;
 using VRT.Downloaders.Common.Abstractions;
 using VRT.Downloaders.Common.Collections;
 using VRT.Downloaders.Common.DownloadStates;
@@ -13,16 +14,16 @@ public sealed class DownloadingWorker : IDisposable
     private readonly IDownloadQueueService _downloadQueueService;
     private readonly CompositeDisposable _disposables;
     private readonly ConcurrentQueue<DownloadTask> _downloadTasksQueue;
-    private readonly IDownloadExecutorService _downloadExecutor;
+    private readonly IAbstractFactory<IDownloadExecutorService> _downloadExecutorFactory;
     private volatile bool _disposed;
     private readonly DownloadingWorkerOptions _workerOptions;
     public DownloadingWorker(
         IDownloadQueueService downloadQueueService,
-        IDownloadExecutorService downloadExecutor,
+        IAbstractFactory<IDownloadExecutorService> downloadExecutorFactory,
         IOptions<DownloadingWorkerOptions> workerOptions)
     {
         _downloadQueueService = Guard.AgainstNull(downloadQueueService);
-        _downloadExecutor = Guard.AgainstNull(downloadExecutor);
+        _downloadExecutorFactory = Guard.AgainstNull(downloadExecutorFactory);
         _disposables = new CompositeDisposable();
         _downloadTasksQueue = new();
         _workerOptions = workerOptions.Value;
@@ -50,19 +51,17 @@ public sealed class DownloadingWorker : IDisposable
     public bool IsDisposed => _disposed;
     public int DownloadsCount => _downloadTasksQueue.Count;
 
-    private async Task StartDownloadingDeamon()
+    private async Task StartDownloadingDeamon(CancellationToken cancellationToken)
     {
         var downloadingTasks = new BlockingList<Task<Result<string>>>();
         Task<Result<IReadOnlyCollection<string>>>? downloadTask = null;
-        var cts = new CancellationTokenSource();
-        cts.DisposeWith(_disposables);
-
-        while (cts.Token.IsCancellationRequested is false)
+        
+        while (cancellationToken.IsCancellationRequested is false)
         {
             var isMaxTaskCountOutOfRange = downloadingTasks.Count >= _workerOptions.MaxConcurrentDownloads;
             if (isMaxTaskCountOutOfRange || _downloadTasksQueue.TryDequeue(out var toDownload) == false)
             {
-                await DelayIdleTime(cts.Token);                                
+                await DelayIdleTime(cancellationToken);                                
                 continue;
             }
             var downloadingTask = toDownload.Download()
@@ -73,7 +72,7 @@ public sealed class DownloadingWorker : IDisposable
             if(downloadTask is null || downloadTask.IsCompleted)
             {
                 downloadTask = downloadingTasks
-                    .DoParallel(continueOnFailure: true, cancellationToken: cts.Token);
+                    .DoParallel(continueOnFailure: true, cancellationToken: cancellationToken);
             }            
         }
     }
@@ -105,7 +104,7 @@ public sealed class DownloadingWorker : IDisposable
     }
     private void EnqueueTask(DownloadTask task)
     {
-        var executor = _downloadExecutor
+        var executor = _downloadExecutorFactory.Create()
             .WithProgressCallback(progress => task.DownloadProgress = progress);
 
         task.TransitionToState(new QueuedDownloadState(executor));
@@ -113,7 +112,7 @@ public sealed class DownloadingWorker : IDisposable
     }
 
     public void Dispose()
-    {
+    {       
         _disposables.Dispose();
         _disposed = true;
     }

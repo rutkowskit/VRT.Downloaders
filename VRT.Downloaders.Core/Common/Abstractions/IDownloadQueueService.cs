@@ -6,7 +6,7 @@ namespace VRT.Downloaders.Common.Abstractions;
 public interface IDownloadQueueService
 {
     IObservableCache<DownloadTask, string> LiveDownloads { get; }
-    Task<Result> AddDownloadTask(DownloadRequest request);
+    Task<Result<DownloadTask>> AddDownloadTask(DownloadRequest request);
     Task StoreDownloadQueueState();
 
 }
