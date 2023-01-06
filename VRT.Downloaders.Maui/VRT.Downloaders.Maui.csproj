@@ -13,7 +13,9 @@
 
 		<!-- App Identifier -->
 		<ApplicationId>com.vrt.downloaders.maui</ApplicationId>
-		<ApplicationIdGuid>27AB33B7-7AC7-443C-A18E-1BC6077589A2</ApplicationIdGuid>
+		<ApplicationIdGuid></ApplicationIdGuid>
+		<ApplicationIdGuid Condition="'$(Configuration)' != 'Release'">61F98820-169A-4A21-8556-77DE06EBBF8B</ApplicationIdGuid>
+		<ApplicationIdGuid Condition="'$(Configuration)' == 'Release'">27AB33B7-7AC7-443C-A18E-1BC6077589A2</ApplicationIdGuid>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -70,23 +72,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="Controls\MediaListItemView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Pages\ErrorPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
 	
-	<ItemGroup>
-	  <MauiImage Include="Resources\Images\download_icon.svg" />
-	  <MauiImage Include="Resources\Images\download_icon_white.svg" />
-	  <MauiImage Include="Resources\Images\settings_icon.svg" />
-	  <MauiImage Include="Resources\Images\trash_icon.svg" />
-	  <MauiImage Include="Resources\Images\save_icon.svg" />
-		<MauiImage Include="Resources\Images\cancel_icon.svg" />
-		<MauiImage Include="Resources\Images\reset_icon.svg" />
-		<MauiImage Include="Resources\Images\stop_icon.svg" />
-		<MauiImage Include="Resources\Images\error_icon.svg" />
-	</ItemGroup>
-
 	<ItemGroup>
 	  <None Include="..\LICENSE.txt" Link="LICENSE.txt">
 	    <PackagePath></PackagePath>

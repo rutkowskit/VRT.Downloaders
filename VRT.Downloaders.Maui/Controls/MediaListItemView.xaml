@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Grid
+    x:Class="VRT.Downloaders.Maui.Controls.MediaListItemView"
+    x:Name="_MediaInfoControlView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:VRT.Downloaders.Maui.Controls"
+    xmlns:mediaService="clr-namespace:VRT.Downloaders.Services.Medias;assembly=VRT.Downloaders.Services.Medias"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:DataType="local:MediaListItemView"
+    RowDefinitions="*,auto">
+    <toolkit:Expander x:Name="uxExpander" ExpandedChanged="OnExpandChange">
+        <toolkit:Expander.Header>
+            <Grid ColumnDefinitions="*, 50">                
+                <VerticalStackLayout
+                    Grid.Column="0"
+                    Padding="10"
+                    Spacing="1">
+                    <Label
+                        FontFamily="RobotoBold"
+                        FontSize="16"
+                        HorizontalOptions="FillAndExpand"
+                        LineBreakMode="TailTruncation"
+                        Text="{Binding Media.Title, Source={x:Reference _MediaInfoControlView }}" />
+                    <Label FontSize="Micro">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding Media.FormatDescription,Source={x:Reference _MediaInfoControlView }}" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </VerticalStackLayout>
+                <ImageButton
+                    Grid.Column="1"
+                    Margin="0,0,5,0"
+                    AutomationId="uxDownloadMediaButton"
+                    Command="{Binding DownloadMediaCommand, Source={x:Reference _MediaInfoControlView }}"
+                    CommandParameter="{Binding Media,Source={x:Reference _MediaInfoControlView }}"
+                    Source="{AppThemeBinding Light=download_icon.png, Dark=download_icon_white.png}"
+                    Style="{StaticResource CmdImageButton}" />
+            </Grid>
+        </toolkit:Expander.Header>
+        <VerticalStackLayout Spacing="0" Margin="15,0,0,0">
+            <HorizontalStackLayout Spacing="5">
+                <ImageButton ToolTipProperties.Text="Copy media url to clipboard"
+                            Source="{AppThemeBinding Light=clipboard_icon.png, Dark=clipboard_icon.png}"
+                            Style="{StaticResource CmdImageButton}"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            Clicked="OnCopyToClipboardButtonClick" />
+                <Label 
+                    x:Name="uxLastOptionMessageField" 
+                    LineBreakMode="TailTruncation" 
+                    HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+            <Border>
+                <VerticalStackLayout>
+                    <Label Style="{StaticResource OptionLabel}" Text="Output file name" />
+                    <Entry Text="{Binding Media.OutputFileName,Source={x:Reference _MediaInfoControlView }}" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>        
+    </toolkit:Expander>    
+</Grid>

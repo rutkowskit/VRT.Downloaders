@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"      
              xmlns:vm="clr-namespace:VRT.Downloaders.Presentation.ViewModels;assembly=VRT.Downloaders.Presentation"
              xmlns:mediaService ="clr-namespace:VRT.Downloaders.Services.Medias;assembly=VRT.Downloaders.Services.Medias"  
+             xmlns:controls="clr-namespace:VRT.Downloaders.Maui.Controls;assembly=VRT.Downloaders.Maui"  
              x:DataType="vm:MainWindowViewModel"
              x:Class="VRT.Downloaders.Maui.Pages.MainPage"
              xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -17,12 +18,13 @@
                 <Grid RowDefinitions="Auto,*" RowSpacing="5">
                     <Label Style="{StaticResource OptionLabel}"
                            Text="Medias available to download" />
-                    <RefreshView Grid.Row="1" Padding="5"
+                    <RefreshView Grid.Row="1" Padding="5"                                 
                                  Command="{Binding GetMediasCommand}"
                                  IsRefreshing="{Binding IsRefreshing}">
-                        <CollectionView x:Name="MediasListView" 
+                        <CollectionView x:Name="MediasListView"                                         
                                         ItemsSource="{Binding Medias}"
-                                        SelectionMode="None"
+                                        SelectionMode="None"    
+                                        ItemSizingStrategy="MeasureAllItems"
                                         EmptyView="None">
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout ItemSpacing="5" Orientation="Vertical" />
@@ -30,30 +32,10 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Frame CornerRadius="5" Padding="0">
-                                        <Grid x:DataType="mediaService:MediaInfo" ColumnDefinitions="*, 50">
-                                            <VerticalStackLayout Padding="10" Spacing="1">
-                                                <Label Text="{Binding Title}"
-                                                       HorizontalOptions="FillAndExpand"
-                                                       FontSize="16" FontFamily="RobotoBold"
-                                                       LineBreakMode="TailTruncation" />
-                                                <Label FontSize="Micro">
-                                                    <Label.FormattedText>
-                                                        <FormattedString>
-                                                            <Span Text="{Binding FormatDescription}" />
-                                                        </FormattedString>
-                                                    </Label.FormattedText>
-                                                </Label>
-                                            </VerticalStackLayout>
-                                            <Grid Grid.Column="1" Margin="0,0,5,0">
-                                                <ImageButton 
-                                                    Style="{StaticResource CmdImageButton}"
-                                                    AutomationId="uxDownloadMediaButton"
-                                                    Source="{AppThemeBinding Light=download_icon.png, Dark=download_icon_white.png}"                                            
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand}"
-                                                    CommandParameter="{Binding}" >
-                                                </ImageButton>
-                                            </Grid>
-                                        </Grid>
+                                        <controls:MediaListItemView
+                                            Media="{Binding}"
+                                            DownloadMediaCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand}">
+                                        </controls:MediaListItemView>                                        
                                     </Frame>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>

@@ -1,7 +1,7 @@
 ﻿using System.Reactive.Concurrency;
 
 namespace VRT.Downloaders.Presentation.Extensions;
-internal static class ObjectExtensions
+public static class ObjectExtensions
 {
     public static T DoOnDispatcher<T>(this T obj, Action<T> action)
         where T : notnull

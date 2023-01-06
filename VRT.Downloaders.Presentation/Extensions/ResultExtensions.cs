@@ -1,8 +1,9 @@
 ﻿namespace VRT.Downloaders.Presentation.Extensions;
-internal static class ResultExtensions
+public static class ResultExtensions
 {
     public static async Task<Result<T>> TapOnDispatcher<T>(this Task<Result<T>> resultTask, Action<T> action)
+        where T : notnull
     {
-        return await resultTask.Tap(r => action(r));
+        return await resultTask.Tap(r => r.DoOnDispatcher(action));
     }
 }
