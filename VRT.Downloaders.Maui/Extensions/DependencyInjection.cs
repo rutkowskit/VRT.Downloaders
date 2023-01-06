@@ -12,7 +12,7 @@ public static partial class DependencyInjection
         return services
             .AddTransient<IFolderPickerService, FolderPickerService>()
             .AddSingleton<AppShell>()
-            .AddTransient<IConfirmationService>(p => p.GetRequiredService<AppShell>())
+            .AddSingleton<IConfirmationService>(p => p.GetService<AppShell>()!)
             .AddSingleton<MainPage>()
             .AddTransient<SettingsPage>()
             .AddMediatR(typeof(MauiProgram).Assembly);

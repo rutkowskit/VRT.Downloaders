@@ -1,11 +1,15 @@
 ﻿using VRT.Downloaders.Common.Abstractions;
-using AndroidApp = Android.App;
 using X = Android.OS;
 
 namespace VRT.Downloaders.Maui.Platforms.Android.Services;
 
 public sealed class AndroidFileSystemService : IFileSystemService
 {
+    public bool FileExists(string path)
+    {
+        return File.Exists(path);
+    }
+
     public string GetAppDataDirectory(bool ensureCreated)
     {
         return DirectoryHelper.GetAppDataDirectory(ensureCreated);

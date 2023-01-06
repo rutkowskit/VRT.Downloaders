@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VRT.Downloaders.Common\VRT.Downloaders.Common.csproj" />
+    <ProjectReference Include="..\VRT.Downloaders.Services.Medias\VRT.Downloaders.Services.Medias.csproj" />
   </ItemGroup>
 
   <ItemGroup>

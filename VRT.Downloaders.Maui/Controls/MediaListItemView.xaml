@@ -40,7 +40,7 @@
                     Style="{StaticResource CmdImageButton}" />
             </Grid>
         </toolkit:Expander.Header>
-        <VerticalStackLayout Spacing="0" Margin="15,0,0,0">
+        <VerticalStackLayout Spacing="0" Margin="15,0,0,15">
             <HorizontalStackLayout Spacing="5">
                 <ImageButton ToolTipProperties.Text="Copy media url to clipboard"
                             Source="{AppThemeBinding Light=clipboard_icon.png, Dark=clipboard_icon.png}"

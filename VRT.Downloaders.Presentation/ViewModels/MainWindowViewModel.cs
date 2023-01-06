@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Reactive.Concurrency;
+using VRT.Downloaders.Medias.Commands.QueueDownloadTask;
+using VRT.Downloaders.Medias.Queries.GetMedias;
 using VRT.Downloaders.Presentation.Extensions;
 
 namespace VRT.Downloaders.Presentation.ViewModels;
@@ -13,14 +14,16 @@ public sealed partial class MainWindowViewModel : BaseViewModel
     private readonly ReadOnlyObservableCollection<DownloadTaskProxy> _downloads;
     private readonly SourceList<MediaInfo> _medias;
 
-    public MainWindowViewModel(IDownloadQueueService downloadService,
+    public MainWindowViewModel(
+        IDownloadQueueService downloadService,
         IEnumerable<IMediaService> mediaService,
         IAppSettingsService settings,
-        IMediator mediator)
+        IMediator mediator        
+        )
     {
         Title = Resources.Title_Downloads;
         _medias = new SourceList<MediaInfo>();
-        ServicePointManager.DefaultConnectionLimit = 1000;        
+        ServicePointManager.DefaultConnectionLimit = 1000;
         Medias = new ObservableCollectionExtended<MediaInfo>();
 
         _medias.Connect()
@@ -34,7 +37,6 @@ public sealed partial class MainWindowViewModel : BaseViewModel
         _mediaServices = mediaService?.ToArray() ?? Array.Empty<IMediaService>();
         SettingsService = settings;
         _mediator = mediator;
-
         _downloadService.LiveDownloads.Connect()
             .ObserveOn(RxApp.MainThreadScheduler)
             .Transform(t => new DownloadTaskProxy(t))
@@ -60,7 +62,7 @@ public sealed partial class MainWindowViewModel : BaseViewModel
     [NotifyCanExecuteChangedFor(nameof(DownloadMediaCommand))]
     [NotifyCanExecuteChangedFor(nameof(GetMediasCommand))]
     private string? _uri;
-    
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DownloadMediaCommand))]
     private MediaInfo? _mediaToAutoDownload;
@@ -79,34 +81,26 @@ public sealed partial class MainWindowViewModel : BaseViewModel
     [RelayCommand()]
     private async Task DownloadMedia(MediaInfo media)
     {
-        var outputDir = SettingsService.GetSettings().OutputDirectory;
-        var request = media.ToDownloadRequest(outputDir);
-        await _downloadService.AddDownloadTask(request).Discard();
+        var cmd = new QueueDownloadTaskCommand(media);
+        await _mediator.Send(cmd);        
     }
 
     [RelayCommand(CanExecute = nameof(CanGetMedias))]
     private async Task GetMedias()
     {
-        _medias.Clear();
-
+        _medias.Clear();        
         try
-        {            
+        {
             this.DoOnDispatcher(vm => vm.IsRefreshing = true);
-            var uri = Uri!;
-            var getMediaResult = await GetMediaService(uri)
-                .BindTry(mediaService => mediaService.GetAvailableMedias(uri))
-                .Tap(medias => medias.SetDefaultOutputFileName());
-
-            // call it after await to avoid Dispatcher problems when updating fields connected with binded properties
-            await getMediaResult
+            await _mediator.Send(new GetMediasQuery(Uri!))
                 .Tap(medias => _medias.AddRange(medias))
                 .TapError(error => _mediator.Publish(new NotifyMessage("Error", error)))
                 .Bind(GetMediaToAutoDownload)
-                .Tap(media => MediaToAutoDownload = media); ;
+                .Tap(media => MediaToAutoDownload = media);            
         }
         finally
         {
-            this.DoOnDispatcher(vm => vm.IsRefreshing = false);            
+            this.DoOnDispatcher(vm => vm.IsRefreshing = false);
         }
     }
     private bool CanGetMedias() => IsRefreshing is false;
@@ -121,9 +115,9 @@ public sealed partial class MainWindowViewModel : BaseViewModel
     }
 
     [RelayCommand(CanExecute = nameof(CanProcessUrl))]
-    private async Task ProcessUrl(string text)
+    private async Task ProcessUrl(string url)
     {
-        var result = await TryCreateResourceUrl(text)
+        var result = await TryCreateResourceUrl(url)
             .Bind(CheckIfMediaServiceExists)
             .Bind(CheckIfMediaUrlHasChanged);
         await result
@@ -134,7 +128,7 @@ public sealed partial class MainWindowViewModel : BaseViewModel
             })
             .TapIf(ShouldAutoRefreshMediaList(), GetMedias);
     }
-    private bool CanProcessUrl(string text) => string.IsNullOrWhiteSpace(text) is false;
+    private static bool CanProcessUrl(string url) => string.IsNullOrWhiteSpace(url) is false;
 
     private Result<MediaInfo> GetMediaToAutoDownload(IReadOnlyCollection<MediaInfo> medias)
     {
@@ -142,24 +136,7 @@ public sealed partial class MainWindowViewModel : BaseViewModel
             .Bind(s => s.AutoDownloadMediaTypePattern.NotEmpty())
             .Bind(medias.FindFirstByDescription);
         return result;
-    }
-
-    private async Task<Result<IMediaService>> GetMediaService(string url)
-    {
-        if (string.IsNullOrWhiteSpace(url))
-        {
-            return Result.Failure<IMediaService>(Resources.Error_NotSupported);
-        }
-
-        foreach (var service in _mediaServices)
-        {
-            var canGetMedia = await service.CanGetMedia(url);
-            if (canGetMedia.IsSuccess)
-                return Result.Success(service);
-        }
-        return Result.Success<IMediaService>(new DirectMediaService());
-    }
-    
+    }    
 
     private bool ShouldAutoRefreshMediaList()
     {
@@ -173,7 +150,7 @@ public sealed partial class MainWindowViewModel : BaseViewModel
     }
     private async Task<Result<Uri>> CheckIfMediaServiceExists(Uri url)
     {
-        return await GetMediaService(url.AbsoluteUri)
+        return await _mediaServices.GetMediaService(url.AbsoluteUri)
             .Bind(s => s.CanGetMedia(url.AbsoluteUri))
             .Map(() => url);
     }

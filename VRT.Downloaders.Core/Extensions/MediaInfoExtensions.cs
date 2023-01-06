@@ -1,7 +1,7 @@
 ﻿using VRT.Downloaders.Common.Models;
 using VRT.Downloaders.Services.Medias;
 
-namespace VRT.Downloaders.Infrastructure.Extensions;
+namespace VRT.Downloaders.Extensions;
 public static class MediaInfoExtensions
 {
     public static DownloadRequest ToDownloadRequest(this MediaInfo media,

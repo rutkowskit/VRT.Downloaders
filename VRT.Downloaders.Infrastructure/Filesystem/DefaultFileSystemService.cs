@@ -1,9 +1,12 @@
-﻿using VRT.Downloaders.Common.Abstractions;
-
-namespace VRT.Downloaders.Abstractions.FileSystem;
+﻿namespace VRT.Downloaders.Abstractions.FileSystem;
 
 public sealed class DefaultFileSystemService : IFileSystemService
 {
+    public bool FileExists(string path)
+    {
+        return File.Exists(path);
+    }
+
     public string GetAppDataDirectory(bool ensureCreated)
         => DirectoryHelper.GetAppDataDirectory(ensureCreated);
 
