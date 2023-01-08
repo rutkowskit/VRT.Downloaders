@@ -14,7 +14,7 @@
             </ResourceDictionary.MergedDictionaries>
             <c:PercentIntToDoubleConverter x:Key="PercentIntToDoubleConverter" />
             <c:DownloadStateToStringConverter x:Key="DownloadStateToStringConverter" />
-            <c:IsErrorDownloadStateConverter x:Key="IsErrorDownloadStateConverter" />
+            <c:IsErrorDownloadStateConverter x:Key="IsErrorDownloadStateConverter" />            
             <toolkit:IsStringNotNullOrWhiteSpaceConverter x:Key="IsStringNotNullOrWhiteSpaceConverter" />
         </ResourceDictionary>
     </Application.Resources>

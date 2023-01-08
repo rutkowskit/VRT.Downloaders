@@ -12,10 +12,9 @@
 		<ApplicationTitle>VRT.Downloaders.Maui</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.vrt.downloaders.maui</ApplicationId>
-		<ApplicationIdGuid></ApplicationIdGuid>
-		<ApplicationIdGuid Condition="'$(Configuration)' != 'Release'">61F98820-169A-4A21-8556-77DE06EBBF8B</ApplicationIdGuid>
-		<ApplicationIdGuid Condition="'$(Configuration)' == 'Release'">27AB33B7-7AC7-443C-A18E-1BC6077589A2</ApplicationIdGuid>
+		<ApplicationId>com.vrt.downloaders.maui</ApplicationId>		
+		<ApplicationIdGuid>61F98820-169A-4A21-8556-77DE06EBBF8B</ApplicationIdGuid>
+		<!--<ApplicationIdGuid Condition="'$(Configuration)' == 'Release'">27AB33B7-7AC7-443C-A18E-1BC6077589A2</ApplicationIdGuid>-->
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>

@@ -67,6 +67,11 @@ public sealed partial class MainWindowViewModel : BaseViewModel
     [NotifyCanExecuteChangedFor(nameof(DownloadMediaCommand))]
     private MediaInfo? _mediaToAutoDownload;
 
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ShowGetMediasErrorCommand))]
+    private string? _getMediasLastError;
+
+
     public ReadOnlyObservableCollection<DownloadTaskProxy> Downloads => _downloads;
     public IAppSettingsService SettingsService { get; }
     public IObservableCollection<MediaInfo> Medias { get; set; }
@@ -88,22 +93,32 @@ public sealed partial class MainWindowViewModel : BaseViewModel
     [RelayCommand(CanExecute = nameof(CanGetMedias))]
     private async Task GetMedias()
     {
-        _medias.Clear();        
+        _medias.Clear();
+        SetGetMediasLastError(string.Empty);
         try
         {
-            this.DoOnDispatcher(vm => vm.IsRefreshing = true);
+            SetIsRefreshing(true);
             await _mediator.Send(new GetMediasQuery(Uri!))
-                .Tap(medias => _medias.AddRange(medias))
-                .TapError(error => _mediator.Publish(new NotifyMessage("Error", error)))
+                .Tap(medias => _medias.AddRange(medias))                
+                .TapError(SetGetMediasLastError)
                 .Bind(GetMediaToAutoDownload)
                 .Tap(media => MediaToAutoDownload = media);            
         }
         finally
         {
-            this.DoOnDispatcher(vm => vm.IsRefreshing = false);
+            SetIsRefreshing(false);
         }
     }
+    
     private bool CanGetMedias() => IsRefreshing is false;
+
+    [RelayCommand(CanExecute = nameof(CanShowGetMediasError))]
+    private async Task ShowGetMediasError()
+    {
+        var request = new ShowErrorRequest(GetMediasLastError!);
+        await _mediator.Send(request);
+    }
+    private bool CanShowGetMediasError() => string.IsNullOrWhiteSpace(GetMediasLastError) is false;
 
     [RelayCommand]
     private void ClearFinished()
@@ -162,4 +177,6 @@ public sealed partial class MainWindowViewModel : BaseViewModel
             ? result
             : Result.Failure<Uri>(Resources.Error_IncorrectResourceUrl);
     }
+    private void SetIsRefreshing(bool isRefreshing) => this.DoOnDispatcher(vm => vm.IsRefreshing = isRefreshing);
+    private void SetGetMediasLastError(string? lastError) => this.DoOnDispatcher(vm => vm.GetMediasLastError = lastError);
 }
