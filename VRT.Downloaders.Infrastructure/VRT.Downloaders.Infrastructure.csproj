@@ -7,6 +7,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VRT.Downloaders.Core\VRT.Downloaders.Core.csproj" />
+    <ProjectReference Include="..\VRT.Downloaders.Services.Html5Player\VRT.Downloaders.Services.Html5Player.csproj" />
     <ProjectReference Include="..\VRT.Downloaders.Services.Medias.TvpVod\VRT.Downloaders.Services.Medias.TvpVod.csproj" />
     <ProjectReference Include="..\VRT.Downloaders.Services.Medias.Youtube\VRT.Downloaders.Services.Medias.Youtube.csproj" />
   </ItemGroup>

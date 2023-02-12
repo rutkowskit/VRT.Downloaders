@@ -27,6 +27,7 @@ public static class DependencyInjection
             .WhenNotExists<IFileSystemService>(s => s.AddSingleton<IFileSystemService, DefaultFileSystemService>())
             .AddSingleton<IMediaService, YoutubeMediaService>()
             .AddSingleton<IMediaService, TvpVodMediaService>()
+            .AddSingleton<IMediaService, Html5PlayerMediaService>()
             .AddSingleton<IAppStateService, AppStateService>()
             .AddSingleton<IConfirmationService, AlwaysTrueConfirmationService>()
             .AddTransientWithAbstractFactory<IDownloadExecutorService,DownloadExecutorService>()            

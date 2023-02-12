@@ -8,5 +8,5 @@
   <ItemGroup>
     <ProjectReference Include="..\VRT.Downloaders.Core\VRT.Downloaders.Core.csproj" />
   </ItemGroup>
-
+	
 </Project>

@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using System.Reactive.Linq;
 using VRT.Downloaders.Common.Abstractions;
 using VRT.Downloaders.Common.Models;
 using VRT.Downloaders.Presentation.ViewModels;
@@ -9,8 +8,8 @@ public partial class MainPage : ContentPage, IActivatableView
 {
     private readonly MainWindowViewModel _viewModel;
     private readonly IAppSettingsService _settingsService;
-    private IDisposable? _delayClipboardTextTimer;
-
+    private string? _lastText;
+    private DateTime _lastTextDateUtc;
     public MainPage(MainWindowViewModel viewModel, IAppSettingsService settingsService)
     {
         InitializeComponent();
@@ -57,13 +56,12 @@ public partial class MainPage : ContentPage, IActivatableView
 
     private void OnClipboardTextData(string? text)
     {
-        if (string.IsNullOrWhiteSpace(text) is false)
+        var curTime = DateTime.UtcNow;
+        if (string.IsNullOrWhiteSpace(text) is false && (_lastText != text || curTime.Subtract(_lastTextDateUtc).TotalSeconds > 5))
         {
-            _delayClipboardTextTimer?.Dispose();
-            // very often clipboard data is processed multiple time, so delay execution to prevent it.
-            _delayClipboardTextTimer = Observable
-                .Timer(TimeSpan.FromMilliseconds(600))
-                .Subscribe(_ => _viewModel.ProcessUrlCommand.Execute(text));
+            _lastText = text;
+            _lastTextDateUtc = curTime;
+            _viewModel.ProcessUrlCommand.Execute(text);
         }
     }
 }

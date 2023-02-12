@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using VRT.Downloaders.Medias.Commands.QueueDownloadTask;
 using VRT.Downloaders.Medias.Queries.GetMedias;
-using VRT.Downloaders.Presentation.Extensions;
 
 namespace VRT.Downloaders.Presentation.ViewModels;
 
@@ -18,7 +17,7 @@ public sealed partial class MainWindowViewModel : BaseViewModel
         IDownloadQueueService downloadService,
         IEnumerable<IMediaService> mediaService,
         IAppSettingsService settings,
-        IMediator mediator        
+        IMediator mediator
         )
     {
         Title = Resources.Title_Downloads;
@@ -27,6 +26,7 @@ public sealed partial class MainWindowViewModel : BaseViewModel
         Medias = new ObservableCollectionExtended<MediaInfo>();
 
         _medias.Connect()
+            .Throttle(TimeSpan.FromMilliseconds(500))
             .ObserveOn(RxApp.MainThreadScheduler)
             .Bind(Medias)
             .Subscribe()
@@ -87,29 +87,35 @@ public sealed partial class MainWindowViewModel : BaseViewModel
     private async Task DownloadMedia(MediaInfo media)
     {
         var cmd = new QueueDownloadTaskCommand(media);
-        await _mediator.Send(cmd);        
+        await _mediator.Send(cmd);
     }
 
-    [RelayCommand(CanExecute = nameof(CanGetMedias))]
+    [RelayCommand(CanExecute = nameof(CanGetMedias), AllowConcurrentExecutions = false)]
     private async Task GetMedias()
     {
+        if (IsRefreshing)
+        {
+            return;
+        }
         _medias.Clear();
-        SetGetMediasLastError(string.Empty);
+        GetMediasLastError = string.Empty;
         try
         {
-            SetIsRefreshing(true);
+            IsRefreshing = true;
             await _mediator.Send(new GetMediasQuery(Uri!))
-                .Tap(medias => _medias.AddRange(medias))                
-                .TapError(SetGetMediasLastError)
+                .Tap(_ => _medias.Clear())
+                .Tap(medias => _medias.AddRange(medias))
+                .Bind(_ => Result.Failure<MediaInfo[]>("Symulant"))
+                .TapError(err => GetMediasLastError = err)
                 .Bind(GetMediaToAutoDownload)
-                .Tap(media => MediaToAutoDownload = media);            
+                .Tap(media => MediaToAutoDownload = media);
         }
         finally
         {
-            SetIsRefreshing(false);
+            IsRefreshing = false;
         }
     }
-    
+
     private bool CanGetMedias() => IsRefreshing is false;
 
     [RelayCommand(CanExecute = nameof(CanShowGetMediasError))]
@@ -151,7 +157,7 @@ public sealed partial class MainWindowViewModel : BaseViewModel
             .Bind(s => s.AutoDownloadMediaTypePattern.NotEmpty())
             .Bind(medias.FindFirstByDescription);
         return result;
-    }    
+    }
 
     private bool ShouldAutoRefreshMediaList()
     {
@@ -177,6 +183,4 @@ public sealed partial class MainWindowViewModel : BaseViewModel
             ? result
             : Result.Failure<Uri>(Resources.Error_IncorrectResourceUrl);
     }
-    private void SetIsRefreshing(bool isRefreshing) => this.DoOnDispatcher(vm => vm.IsRefreshing = isRefreshing);
-    private void SetGetMediasLastError(string? lastError) => this.DoOnDispatcher(vm => vm.GetMediasLastError = lastError);
 }

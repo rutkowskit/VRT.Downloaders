@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\VRT.Downloaders.Services.Medias\VRT.Downloaders.Services.Medias.csproj" />
+  </ItemGroup>
+
+</Project>

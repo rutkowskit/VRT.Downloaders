@@ -7,11 +7,11 @@ public sealed record GetMediasQuery(string Uri) : IRequest<Result<MediaInfo[]>>
 {    
     internal sealed class GetMediasQueryHandler : IRequestHandler<GetMediasQuery, Result<MediaInfo[]>>
     {
-        private readonly IEnumerable<IMediaService> _mediaServices;
+        private readonly IReadOnlyCollection<IMediaService> _mediaServices;
 
         public GetMediasQueryHandler(IEnumerable<IMediaService> mediaServices)
         {
-            _mediaServices = mediaServices;
+            _mediaServices = mediaServices.OrderBy(o=>o.GetServicePriority()).ToArray();
         }
         public async Task<Result<MediaInfo[]>> Handle(GetMediasQuery request, CancellationToken cancellationToken)
         {
