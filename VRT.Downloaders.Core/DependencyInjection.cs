@@ -12,6 +12,6 @@ public static class DependencyInjection
         return services
             .AddSingleton<IDownloadQueueService, DownloadQueueService>()
             .AddSingleton<DownloadingWorker>()
-            .AddMediatR(typeof(DependencyInjection).Assembly);
+            .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DependencyInjection).Assembly));
     }
 }

@@ -7,7 +7,7 @@ public static class DependencyInjection
     public static IServiceCollection AddPresentationCore(this IServiceCollection services)
     {
         return services
-            .AddMediatR(typeof(DependencyInjection).Assembly)
+            .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DependencyInjection).Assembly))
             .AddViewModels();
     }
 

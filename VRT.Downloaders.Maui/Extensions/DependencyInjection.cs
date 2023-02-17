@@ -15,6 +15,6 @@ public static partial class DependencyInjection
             .AddSingleton<IConfirmationService>(p => p.GetService<AppShell>()!)
             .AddSingleton<MainPage>()
             .AddTransient<SettingsPage>()
-            .AddMediatR(typeof(MauiProgram).Assembly);
+            .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(MauiProgram).Assembly));
     }
 }

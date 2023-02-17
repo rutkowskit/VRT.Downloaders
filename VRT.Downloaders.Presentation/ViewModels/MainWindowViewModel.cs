@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using VRT.Downloaders.Medias.Commands.QueueDownloadTask;
 using VRT.Downloaders.Medias.Queries.GetMedias;
+using VRT.Downloaders.Presentation.Extensions;
 
 namespace VRT.Downloaders.Presentation.ViewModels;
 
@@ -105,10 +106,9 @@ public sealed partial class MainWindowViewModel : BaseViewModel
             await _mediator.Send(new GetMediasQuery(Uri!))
                 .Tap(_ => _medias.Clear())
                 .Tap(medias => _medias.AddRange(medias))
-                .Bind(_ => Result.Failure<MediaInfo[]>("Symulant"))
-                .TapError(err => GetMediasLastError = err)
+                .TapError(err => this.DoOnDispatcher(vm => vm.GetMediasLastError = err))
                 .Bind(GetMediaToAutoDownload)
-                .Tap(media => MediaToAutoDownload = media);
+                .TapOnDispatcher(media => MediaToAutoDownload = media);                
         }
         finally
         {

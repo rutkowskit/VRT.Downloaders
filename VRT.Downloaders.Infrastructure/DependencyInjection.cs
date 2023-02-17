@@ -31,7 +31,7 @@ public static class DependencyInjection
             .AddSingleton<IAppStateService, AppStateService>()
             .AddSingleton<IConfirmationService, AlwaysTrueConfirmationService>()
             .AddTransientWithAbstractFactory<IDownloadExecutorService,DownloadExecutorService>()            
-            .AddMediatR(typeof(DependencyInjection).Assembly);
+            .AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DependencyInjection).Assembly));
     }
 
     public static IServiceCollection AddAppConfig(this IServiceCollection services)
