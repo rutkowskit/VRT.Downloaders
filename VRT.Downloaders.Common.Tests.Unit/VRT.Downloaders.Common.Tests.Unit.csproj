@@ -8,8 +8,4 @@
     <ProjectReference Include="..\VRT.Downloaders.Common\VRT.Downloaders.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="FluentAssertions" Version="6.10.0" />
-  </ItemGroup>
-
 </Project>

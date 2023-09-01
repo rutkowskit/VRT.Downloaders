@@ -22,7 +22,7 @@ public sealed class AppSettings : ValueObject
     /// </summary>
     public string? AutoDownloadMediaTypePattern { get; }
 
-    protected override IEnumerable<object> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetEqualityComponents()
     {
         yield return EnableClipboardMonitor;
         yield return OutputDirectory;
