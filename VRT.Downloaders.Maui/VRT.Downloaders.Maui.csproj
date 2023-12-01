@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0-android</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks>net8.0-android</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>VRT.Downloaders.Maui</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -23,32 +23,34 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
-		<DefaultLanguage>en</DefaultLanguage>
+		<DefaultLanguage>en-us</DefaultLanguage>
 		<PackageCertificateThumbprint>B139F22CDA17349355689653B61A414629E82FFE</PackageCertificateThumbprint>
 		<PackageCertificateKeyFile>VRT.Downloaders.Maui_TemporaryKey.pfx</PackageCertificateKeyFile>
 		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+		<WindowsPackageType>None</WindowsPackageType>
+		<SelfContained Condition="'$(IsUnpackaged)' == 'true'">true</SelfContained>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(RuntimeIdentifierOverride)' != ''">
-		<RuntimeIdentifier>$(RuntimeIdentifierOverride)</RuntimeIdentifier>
+		<RuntimeIdentifier>$(RuntimeIdentifierOverride)</RuntimeIdentifier>		
 	</PropertyGroup>
 	
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
 	  <WarningLevel>7</WarningLevel>
 	  <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 	
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
 	  <WarningLevel>7</WarningLevel>
 	  <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 	
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-windows10.0.19041.0|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
 	  <WarningLevel>7</WarningLevel>
 	  <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 	
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-windows10.0.19041.0|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
 	  <WarningLevel>7</WarningLevel>
 	  <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
@@ -87,8 +89,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CommunityToolkit.Maui" Version="5.3.0" />
-	  <PackageReference Include="ReactiveUI.Maui" Version="19.4.1" />
+	  <PackageReference Include="CommunityToolkit.Maui" Version="7.0.0" />
+	  <PackageReference Include="ReactiveUI.Maui" Version="19.5.1" />
+	  <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
