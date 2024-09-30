@@ -30,6 +30,10 @@
 		<WindowsPackageType>None</WindowsPackageType>
 		<SelfContained Condition="'$(IsUnpackaged)' == 'true'">true</SelfContained>
 	</PropertyGroup>
+
+	<PropertyGroup>
+		<WindowsSdkPackageVersion>10.0.19041.41</WindowsSdkPackageVersion>
+	</PropertyGroup>
 	
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' and '$(RuntimeIdentifierOverride)' != ''">
 		<RuntimeIdentifier>$(RuntimeIdentifierOverride)</RuntimeIdentifier>		
@@ -89,9 +93,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CommunityToolkit.Maui" Version="7.0.0" />
-	  <PackageReference Include="ReactiveUI.Maui" Version="19.5.1" />
-	  <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.3" />
+	  <PackageReference Include="CommunityToolkit.Maui" Version="9.1.0" />
+	  <PackageReference Include="ReactiveUI.Maui" Version="20.1.63" />
+	  <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.91" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -120,5 +124,9 @@
 	</ItemGroup>
 
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionVRTDownloadersMauiHideInfoBar="True" /></VisualStudio></ProjectExtensions>
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
+	</ItemGroup>
 	
 </Project>

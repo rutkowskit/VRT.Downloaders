@@ -10,6 +10,7 @@ public partial class AppShell : Shell, IConfirmationService
         InitializeComponent();
         RegisterRouting();
         BindingContext = viewModel;
+
     }
 
     private void RegisterRouting()

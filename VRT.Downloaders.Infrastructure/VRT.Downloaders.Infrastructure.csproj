@@ -3,7 +3,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VRT.Downloaders.Core\VRT.Downloaders.Core.csproj" />

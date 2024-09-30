@@ -32,6 +32,7 @@
             </Grid>
 
             <Border Grid.Row="1" BackgroundColor="Transparent">
+
                 <Grid RowDefinitions="Auto,*" RowSpacing="5">
                     <Label Style="{StaticResource OptionLabel}" Text="Medias available to download" />
                     <RefreshView
@@ -49,7 +50,7 @@
                                 <LinearItemsLayout ItemSpacing="5" Orientation="Vertical" />
                             </CollectionView.ItemsLayout>
                             <CollectionView.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="mediaService:MediaInfo">
                                     <Frame CornerRadius="5" Padding="0">
                                         <controls:MediaListItemView DownloadMediaCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand}" Media="{Binding}" />
                                     </Frame>
@@ -58,6 +59,7 @@
                         </CollectionView>
                     </RefreshView>
                 </Grid>
+
             </Border>
             <Border Grid.Row="2" BackgroundColor="Transparent">
                 <Grid RowDefinitions="Auto,*" RowSpacing="5">

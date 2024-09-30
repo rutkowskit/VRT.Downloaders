@@ -31,13 +31,13 @@ This application downloads medias from supported sources to allow the user to co
 
 
 ### Publish Release for Windows 10
-``` dotnet publish -c Release -f net7.0-windows10.0.19041.0 --force -r win10-x64 --self-contained /p:PublishSingleFile=true /p:RuntimeIdentifierOverride=win10-x64```
+``` dotnet publish -c Release -f net8.0-windows10.0.19041.0 --force -r win10-x64 --self-contained /p:PublishSingleFile=true /p:RuntimeIdentifierOverride=win10-x64```
 
 If there are problems with assembly optimisation, you can use below command instead:
-``` dotnet publish -c Release -f net7.0-windows10.0.19041.0 --force -r win10-x64 --self-contained /p:RuntimeIdentifierOverride=win10-x64 ```
+``` dotnet publish -c Release -f net8.0-windows10.0.19041.0 --force -r win10-x64 --self-contained /p:RuntimeIdentifierOverride=win10-x64 ```
 
 #### Framework Dependent: 
 ```dotnet publish -f net8.0-windows10.0.19041.0 -p:WindowsPackageType=None --no-restore```
 
 #### Self-Contained: 
-```dotnet publish -f net8.0-windows10.0.19041.0 -p:WindowsPackageType=None --no-restore -p:SelfContained=true -p:WindowsAppSDKSelfContained=true```
+```dotnet publish -c Release -f net8.0-windows10.0.19041.0 -p:WindowsPackageType=None --no-restore -p:SelfContained=true -p:WindowsAppSDKSelfContained=true```

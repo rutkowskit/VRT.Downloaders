@@ -8,10 +8,12 @@ namespace VRT.Downloaders.Services.DownloadQueue;
 
 public sealed partial class DownloadTask : ObservableObject, IDownloadContext
 {
+    private readonly SemaphoreSlim _semaphore;
     private BaseDownloadState _currentState;
     public event EventHandler<BaseDownloadState> StateChanged;
     public DownloadTask(DownloadRequest? request)
     {
+        _semaphore = new(1, 1);
         StateChanged = delegate { };
         Request = request ?? throw new ArgumentNullException(nameof(request));
         _currentState = null!;
@@ -29,10 +31,25 @@ public sealed partial class DownloadTask : ObservableObject, IDownloadContext
 
     public void TransitionToState(BaseDownloadState state)
     {
-        //TODO: add locking to avoid race condition problem
-        _currentState = state;
-        _currentState.EnterState(this);
-        StateChanged(this,state);
+        if (_currentState == state)
+        {
+            return;
+        }
+        _semaphore.Wait();
+        try
+        {
+            if (_currentState == state)
+            {
+                return;
+            }
+            _currentState = state;
+            _currentState.EnterState(this);
+            StateChanged(this, state);
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
     public Task<Result> Download()
     {

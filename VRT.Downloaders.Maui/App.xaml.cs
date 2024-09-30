@@ -17,6 +17,7 @@ public partial class App : Application
         _services = services;
         _mediator = mediator;
     }
+
     protected override async void OnStart()
     {
         _ = await EnsurePermissionGranted<Permissions.StorageWrite>()
@@ -24,6 +25,10 @@ public partial class App : Application
             .Ensure(EnsurePermissionGranted<Permissions.NetworkState>)
             .Tap(() => StartJobs(_services))
             .TapError(() => Environment.Exit(0));
+        if (MainPage?.Window is not null)
+        {
+            MainPage.Window.Destroying += OnDestroying;
+        }
     }
     private static async Task<Result> EnsurePermissionGranted<TPermission>()
         where TPermission : Permissions.BasePermission, new()
@@ -38,8 +43,12 @@ public partial class App : Application
         _ = services.GetRequiredService<DownloadingWorker>();
     }
 
-    protected override async void OnSleep()
+    private async void OnDestroying(object? sender, EventArgs e)
     {
+        if (MainPage?.Window is not null)
+        {
+            MainPage.Window.Destroying -= OnDestroying;
+        }
         await _mediator.Publish(new StoreApplicationStateMessage());
     }
 }
