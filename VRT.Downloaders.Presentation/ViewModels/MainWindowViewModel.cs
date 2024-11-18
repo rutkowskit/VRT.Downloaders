@@ -23,7 +23,6 @@ public sealed partial class MainWindowViewModel : BaseViewModel
     {
         Title = Resources.Title_Downloads;
         _medias = new SourceList<MediaInfo>();
-        ServicePointManager.DefaultConnectionLimit = 1000;
         Medias = new ObservableCollectionExtended<MediaInfo>();
 
         _medias.Connect()
@@ -35,7 +34,7 @@ public sealed partial class MainWindowViewModel : BaseViewModel
             .Discard();
 
         _downloadService = downloadService;
-        _mediaServices = mediaService?.ToArray() ?? Array.Empty<IMediaService>();
+        _mediaServices = mediaService?.ToArray() ?? [];
         SettingsService = settings;
         _mediator = mediator;
         _downloadService.LiveDownloads.Connect()
@@ -108,7 +107,7 @@ public sealed partial class MainWindowViewModel : BaseViewModel
                 .Tap(medias => _medias.AddRange(medias))
                 .TapError(err => this.DoOnDispatcher(vm => vm.GetMediasLastError = err))
                 .Bind(GetMediaToAutoDownload)
-                .TapOnDispatcher(media => MediaToAutoDownload = media);                
+                .TapOnDispatcher(media => MediaToAutoDownload = media);
         }
         finally
         {

@@ -3,9 +3,11 @@ using System.Globalization;
 using VRT.Downloaders.Common.DownloadStates;
 
 namespace VRT.Downloaders.Maui.Converters;
-public sealed class DownloadStateToStringConverter
+
+[AcceptEmptyServiceProvider]
+public sealed partial class DownloadStateToStringConverter
     : BaseConverter<BaseDownloadState.States, string?>
-{    
+{
     public override string? DefaultConvertReturnValue { get; set; }
     public override BaseDownloadState.States DefaultConvertBackReturnValue { get; set; }
 

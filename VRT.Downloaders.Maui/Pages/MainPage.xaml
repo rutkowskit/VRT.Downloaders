@@ -51,9 +51,10 @@
                             </CollectionView.ItemsLayout>
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="mediaService:MediaInfo">
-                                    <Frame CornerRadius="5" Padding="0">
-                                        <controls:MediaListItemView DownloadMediaCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand}" Media="{Binding}" />
-                                    </Frame>
+                                    <Border Padding="0">
+                                        <controls:MediaListItemView DownloadMediaCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand,x:DataType=vm:MainWindowViewModel}" 
+                                                                    Media="{Binding}" />
+                                    </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
@@ -87,7 +88,7 @@
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Frame CornerRadius="5" Padding="5">
+                                <Border Padding="5">
                                     <Grid ColumnDefinitions="*, Auto" x:DataType="vm:DownloadTaskProxy">
                                         <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10">
                                             <Label
@@ -117,7 +118,7 @@
                                                 <ImageButton
                                                     Grid.Column="1"
                                                     AutomationId="uxShowErrorButton"
-                                                    Command="{Binding Path=ShowDownloadErrorCommand, Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}}"
+                                                    Command="{Binding Path=ShowDownloadErrorCommand, x:DataType=vm:MainWindowViewModel, Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}}"
                                                     CommandParameter="{Binding}"
                                                     HeightRequest="20"
                                                     IsVisible="{Binding State, Converter={StaticResource IsErrorDownloadStateConverter}}"
@@ -147,7 +148,7 @@
                                                 Style="{StaticResource CmdImageButton}" />
                                         </HorizontalStackLayout>
                                     </Grid>
-                                </Frame>
+                                </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>

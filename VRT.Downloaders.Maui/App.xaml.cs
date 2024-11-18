@@ -9,13 +9,19 @@ public partial class App : Application
 {
     private readonly IServiceProvider _services;
     private readonly IMediator _mediator;
+    private readonly AppShell _shell;
 
     public App(AppShell shell, IServiceProvider services, IMediator mediator)
     {
         InitializeComponent();
-        MainPage = shell;
+        _shell = shell;
         _services = services;
         _mediator = mediator;
+    }
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        return new(_shell);
     }
 
     protected override async void OnStart()
@@ -25,9 +31,10 @@ public partial class App : Application
             .Ensure(EnsurePermissionGranted<Permissions.NetworkState>)
             .Tap(() => StartJobs(_services))
             .TapError(() => Environment.Exit(0));
-        if (MainPage?.Window is not null)
+        var mainWindow = GetMainWindow();
+        if (mainWindow is not null)
         {
-            MainPage.Window.Destroying += OnDestroying;
+            mainWindow.Destroying += OnDestroying;
         }
     }
     private static async Task<Result> EnsurePermissionGranted<TPermission>()
@@ -45,10 +52,20 @@ public partial class App : Application
 
     private async void OnDestroying(object? sender, EventArgs e)
     {
-        if (MainPage?.Window is not null)
+        var mainWindow = GetMainWindow();
+        if (mainWindow is not null)
         {
-            MainPage.Window.Destroying -= OnDestroying;
+            mainWindow.Destroying -= OnDestroying;
         }
         await _mediator.Publish(new StoreApplicationStateMessage());
+    }
+    private Window? GetMainWindow()
+    {
+        return Windows switch
+        {
+            { Count: 0 } => null,
+            [Window window, ..] => window,
+            _ => null
+        };
     }
 }

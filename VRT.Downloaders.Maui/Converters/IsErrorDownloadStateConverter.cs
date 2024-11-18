@@ -3,6 +3,7 @@ using System.Globalization;
 using VRT.Downloaders.Common.DownloadStates;
 
 namespace VRT.Downloaders.Maui.Converters;
+[AcceptEmptyServiceProvider]
 public sealed class IsErrorDownloadStateConverter
     : BaseConverter<BaseDownloadState.States, bool>
 {

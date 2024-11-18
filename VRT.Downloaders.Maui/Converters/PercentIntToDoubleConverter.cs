@@ -6,7 +6,8 @@ namespace VRT.Downloaders.Maui.Converters;
 /// <summary>
 /// Converts an integer value to double precission percent number
 /// </summary>
-public sealed class PercentIntToDoubleConverter : BaseConverter<int, double>
+[AcceptEmptyServiceProvider]
+public sealed partial class PercentIntToDoubleConverter : BaseConverter<int, double>
 {
     public override double DefaultConvertReturnValue { get; set; }
     public override int DefaultConvertBackReturnValue { get; set; }

@@ -1,7 +1,7 @@
-﻿namespace VRT.Downloaders.Maui.Pages;
+﻿
+namespace VRT.Downloaders.Maui.Pages;
 
-[QueryProperty(nameof(ErrorMessage), "ErrorMessage")]
-public partial class ErrorPage : ContentPage
+public partial class ErrorPage : ContentPage, IQueryAttributable
 {
     public ErrorPage()
     {
@@ -13,7 +13,14 @@ public partial class ErrorPage : ContentPage
     }
     public string? ErrorMessage { get; set; }
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
-    {           
+    {
         uxErrorField.Text = ErrorMessage;
-    }    
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        ErrorMessage = query.TryGetValue(nameof(ErrorMessage), out var errMessage) && errMessage is string errMessageText
+            ? errMessageText
+            : string.Empty;
+    }
 }
