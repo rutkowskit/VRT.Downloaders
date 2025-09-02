@@ -36,12 +36,5 @@ public sealed class RemoteStream : IDisposable
         response.EnsureSuccessStatusCode();
         var stream = await response.Content.ReadAsStreamAsync();
         return stream.SetDisposable(_disposables);
-
-        //#pragma warning disable SYSLIB0014 // Type or member is obsolete
-        //        var req = (HttpWebRequest)WebRequest.Create(Url);
-        //#pragma warning restore SYSLIB0014 // Type or member is obsolete
-        //        req.AddRange(Range.From, Range.To);
-        //        var response = await req.GetResponseAsync().DisposeWith(_disposables);
-        //        return response.GetResponseStream().SetDisposable(_disposables);
     }
 }
