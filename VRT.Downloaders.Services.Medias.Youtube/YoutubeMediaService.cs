@@ -42,9 +42,10 @@ namespace VRT.Downloaders.Services.Medias.Youtube
         }
         private static MediaInfo[] GetAudioStreams(Video videoInfo, StreamManifest manifest)
         {
-            return manifest
-                .GetAudioOnlyStreams()
-                .Where(IsOriginalLanguage)
+            var audioStreams = manifest.GetAudioOnlyStreams().ToArray();
+            var hasMultiLanguageAudios = audioStreams.Any(IsOriginalLanguage);
+            return audioStreams
+                .Where(s => hasMultiLanguageAudios is false || IsOriginalLanguage(s))
                 .OrderByDescending(s => s.Bitrate)
                 .Select(a => new MediaInfo()
                 {

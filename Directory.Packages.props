@@ -23,10 +23,10 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.4" />
     <PackageVersion Include="System.Reactive" Version="6.0.1" />
-    <PackageVersion Include="YoutubeExplode" Version="6.5.3" />
+    <PackageVersion Include="YoutubeExplode" Version="6.5.4" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="xunit" Version="2.9.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
-    <PackageVersion Include="YoutubeExplode.Converter" Version="6.5.3" />
+    <PackageVersion Include="YoutubeExplode.Converter" Version="6.5.4" />
   </ItemGroup>
 </Project>
