@@ -4,8 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:VRT.Downloaders.Maui.Controls;assembly=VRT.Downloaders.Maui"
-    xmlns:mediaService ="clr-namespace:VRT.Downloaders.Services.Medias;assembly=VRT.Downloaders.Services.Medias"
-    xmlns:vm="clr-namespace:VRT.Downloaders.Presentation.ViewModels;assembly=VRT.Downloaders.Presentation"
+    xmlns:mediaService="clr-namespace:VRT.Downloaders.Services.Medias;assembly=VRT.Downloaders.Services.Medias"
+    xmlns:vm="clr-namespace:VRT.Downloaders.Maui.ViewModels;assembly=VRT.Downloaders.Maui"
     xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:DataType="vm:MainWindowViewModel">
     <ContentPage.Content>
@@ -37,9 +37,9 @@
                     <Label Style="{StaticResource OptionLabel}" Text="Medias available to download" />
                     <RefreshView
                         Grid.Row="1"
+                        Padding="5"
                         Command="{Binding GetMediasCommand}"
-                        IsRefreshing="{Binding IsRefreshing}"
-                        Padding="5">
+                        IsRefreshing="{Binding IsRefreshing}">
                         <CollectionView
                             x:Name="MediasListView"
                             EmptyView="None"
@@ -52,8 +52,7 @@
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="mediaService:MediaInfo">
                                     <Border Padding="0">
-                                        <controls:MediaListItemView DownloadMediaCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand,x:DataType=vm:MainWindowViewModel}" 
-                                                                    Media="{Binding}" />
+                                        <controls:MediaListItemView DownloadMediaCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:MainWindowViewModel}}, Path=DownloadMediaCommand, x:DataType=vm:MainWindowViewModel}" Media="{Binding}" />
                                     </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
@@ -89,7 +88,7 @@
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Border Padding="5">
-                                    <Grid ColumnDefinitions="*, Auto" x:DataType="vm:DownloadTaskProxy">
+                                    <Grid x:DataType="vm:DownloadTaskProxy" ColumnDefinitions="*, Auto">
                                         <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10">
                                             <Label
                                                 FontFamily="RobotoRegular"
@@ -132,7 +131,8 @@
                                                 AutomationId="uxRetryButton"
                                                 Command="{Binding RetryTaskCommand}"
                                                 IsVisible="{Binding State, Converter={StaticResource IsErrorDownloadStateConverter}}"
-                                                Source="{AppThemeBinding Light=download_icon.png, Dark=download_icon_white.png}"
+                                                Source="{AppThemeBinding Light=download_icon.png,
+                                                                         Dark=download_icon_white.png}"
                                                 Style="{StaticResource CmdImageButton}" />
                                             <ImageButton
                                                 AutomationId="uxCancelTaskButton"

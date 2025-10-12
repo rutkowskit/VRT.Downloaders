@@ -1,10 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using VRT.Downloaders.Medias.Commands.QueueDownloadTask;
-using VRT.Downloaders.Medias.Queries.GetMedias;
-using VRT.Downloaders.Presentation.Extensions;
-
-namespace VRT.Downloaders.Presentation.ViewModels;
+﻿namespace VRT.Downloaders.Maui.ViewModels;
 
 public sealed partial class MainWindowViewModel : BaseViewModel
 {
@@ -56,20 +50,20 @@ public sealed partial class MainWindowViewModel : BaseViewModel
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DownloadMediaCommand))]
     [NotifyCanExecuteChangedFor(nameof(GetMediasCommand))]
-    private bool _isRefreshing;
+    public partial bool IsRefreshing { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DownloadMediaCommand))]
     [NotifyCanExecuteChangedFor(nameof(GetMediasCommand))]
-    private string? _uri;
+    public partial string? Uri { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DownloadMediaCommand))]
-    private MediaInfo? _mediaToAutoDownload;
+    public partial MediaInfo? MediaToAutoDownload { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ShowGetMediasErrorCommand))]
-    private string? _getMediasLastError;
+    public partial string? GetMediasLastError { get; set; }
 
 
     public ReadOnlyObservableCollection<DownloadTaskProxy> Downloads => _downloads;

@@ -1,8 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using System.Reactive.Concurrency;
-using VRT.Downloaders.Presentation.Extensions;
-
-namespace VRT.Downloaders.Presentation.ViewModels;
+﻿namespace VRT.Downloaders.Maui.ViewModels;
 
 public sealed partial class DownloadTaskProxy : BaseViewModel
 {
@@ -10,18 +6,18 @@ public sealed partial class DownloadTaskProxy : BaseViewModel
     public DownloadTaskProxy(DownloadTask task)
     {
         _task = task;
-        _task.StateChanged += OnTaskStateChanged;        
-        _task.PropertyChanged += OnTaskPropertyChanged;        
+        _task.StateChanged += OnTaskStateChanged;
+        _task.PropertyChanged += OnTaskPropertyChanged;
     }
 
-    private void OnTaskStateChanged(object? sender, BaseDownloadState e)
+    private async void OnTaskStateChanged(object? sender, BaseDownloadState e)
     {
-        this.DoOnDispatcher(p =>
+        await this.DoOnDispatcher(p =>
         {
             p.CancelTaskCommand.NotifyCanExecuteChanged();
             p.RemoveTaskCommand.NotifyCanExecuteChanged();
             p.RetryTaskCommand.NotifyCanExecuteChanged();
-        });        
+        });
     }
 
     public string Name => _task.Request.Name;

@@ -1,4 +1,4 @@
-using VRT.Downloaders.Presentation.ViewModels;
+using VRT.Downloaders.Maui.ViewModels;
 
 namespace VRT.Downloaders.Maui.Pages;
 

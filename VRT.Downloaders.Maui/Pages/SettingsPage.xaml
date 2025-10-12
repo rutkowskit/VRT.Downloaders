@@ -1,66 +1,69 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:VRT.Downloaders.Presentation.ViewModels;assembly=VRT.Downloaders.Presentation"
-             x:DataType="vm:SettingsViewModel"
-             x:Class="VRT.Downloaders.Maui.Pages.SettingsPage"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             Title="Settings">    
+<ContentPage
+    x:Class="VRT.Downloaders.Maui.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vm="clr-namespace:VRT.Downloaders.Maui.ViewModels;assembly=VRT.Downloaders.Maui"
+    Title="Settings"
+    x:DataType="vm:SettingsViewModel">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Save" Command="{Binding SaveSettingsCommand}">
-            <ToolbarItem.IconImageSource>                
+        <ToolbarItem Command="{Binding SaveSettingsCommand}" Text="Save">
+            <ToolbarItem.IconImageSource>
                 <OnPlatform x:TypeArguments="ImageSource">
                     <On Platform="Android, WinUI" Value="save_icon.png" />
                 </OnPlatform>
-            </ToolbarItem.IconImageSource>            
+            </ToolbarItem.IconImageSource>
         </ToolbarItem>
-        <ToolbarItem Text="Reset" Command="{Binding ResetSettingsCommand}">
+        <ToolbarItem Command="{Binding ResetSettingsCommand}" Text="Reset">
             <ToolbarItem.IconImageSource>
                 <OnPlatform x:TypeArguments="ImageSource">
                     <On Platform="Android, WinUI" Value="reset_icon.png" />
                 </OnPlatform>
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
-    </ContentPage.ToolbarItems>        
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <!-- Settings View -->
+        <!--  Settings View  -->
         <ScrollView Margin="10,0">
-            <Border Grid.Row="1"
-                    BackgroundColor="Transparent"
-                    Grid.Column="1">                
+            <Border
+                Grid.Row="1"
+                Grid.Column="1"
+                BackgroundColor="Transparent">
                 <VerticalStackLayout Spacing="10">
                     <Border>
                         <VerticalStackLayout>
-                            <Label Text="Video output directory" Style="{StaticResource OptionLabel}" />
+                            <Label Style="{StaticResource OptionLabel}" Text="Video output directory" />
                             <Grid ColumnDefinitions="*, Auto">
                                 <Entry Text="{Binding OutputDirectory}" />
-                                <Button Grid.Column="1" 
-                                        IsVisible="{Binding IsFolderPickerSupported}"
-                                        Text="..." 
-                                        Command="{Binding PickOutputDirectoryCommand}"/>
-                            </Grid>                            
+                                <Button
+                                    Grid.Column="1"
+                                    Command="{Binding PickOutputDirectoryCommand}"
+                                    IsVisible="{Binding IsFolderPickerSupported}"
+                                    Text="..." />
+                            </Grid>
                         </VerticalStackLayout>
                     </Border>
                     <Border>
                         <VerticalStackLayout>
-                            <Label Text="Enable clipbloard monitor" Style="{StaticResource OptionLabel}" />
-                            <Switch Grid.Column="1" IsToggled="{Binding EnableClipboardMonitor}"/>
+                            <Label Style="{StaticResource OptionLabel}" Text="Enable clipbloard monitor" />
+                            <Switch Grid.Column="1" IsToggled="{Binding EnableClipboardMonitor}" />
                         </VerticalStackLayout>
                     </Border>
                     <Border>
                         <VerticalStackLayout>
-                            <Label Text="Enable auto get medias" Style="{StaticResource OptionLabel}" />
-                            <Switch Grid.Column="1" IsToggled="{Binding EnableAutoGetMedias}"/>
+                            <Label Style="{StaticResource OptionLabel}" Text="Enable auto get medias" />
+                            <Switch Grid.Column="1" IsToggled="{Binding EnableAutoGetMedias}" />
                         </VerticalStackLayout>
                     </Border>
                     <Border>
                         <VerticalStackLayout>
-                            <Label Text="Auto download media type regex pattern" Style="{StaticResource OptionLabel}" />
+                            <Label Style="{StaticResource OptionLabel}" Text="Auto download media type regex pattern" />
                             <Entry Text="{Binding AutoDownloadMediaTypePattern}" />
                         </VerticalStackLayout>
                     </Border>
-                </VerticalStackLayout>                
-            </Border>           
-        </ScrollView>       
+                </VerticalStackLayout>
+            </Border>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

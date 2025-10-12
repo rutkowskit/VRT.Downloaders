@@ -1,10 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using VRT.Downloaders.Common.Models;
-using VRT.Downloaders.Presentation.Extensions;
 
-namespace VRT.Downloaders.Presentation.ViewModels;
+namespace VRT.Downloaders.Maui.ViewModels;
 
 public sealed partial class SettingsViewModel : BaseViewModel
 {
@@ -23,15 +20,15 @@ public sealed partial class SettingsViewModel : BaseViewModel
         _settingsService.Saved += OnSettingsSaved!;
         _confirmationService = confirmationService;
         _folderPicker = folderPicker;
-        IsFolderPickerSupported = _folderPicker.IsPickFolderSupported;        
+        IsFolderPickerSupported = _folderPicker.IsPickFolderSupported;
     }
 
-    [ObservableProperty] public AppSettings? _currentSettings;
-    [ObservableProperty] public string? _outputDirectory;
-    [ObservableProperty] public bool _enableClipboardMonitor;
-    [ObservableProperty] public bool _enableAutoGetMedias;
-    [ObservableProperty] public bool _isFolderPickerSupported;
-    [ObservableProperty] public string? _autoDownloadMediaTypePattern;
+    [ObservableProperty] public partial AppSettings? CurrentSettings { get; set; }
+    [ObservableProperty] public partial string? OutputDirectory { get; set; }
+    [ObservableProperty] public partial bool EnableClipboardMonitor { get; set; }
+    [ObservableProperty] public partial bool EnableAutoGetMedias { get; set; }
+    [ObservableProperty] public partial bool IsFolderPickerSupported { get; set; }
+    [ObservableProperty] public partial string? AutoDownloadMediaTypePattern { get; set; }
 
     private void SetCurrentSettings(AppSettings settings)
     {
@@ -88,9 +85,9 @@ public sealed partial class SettingsViewModel : BaseViewModel
         var result = new AppSettings(OutputDirectory!, EnableClipboardMonitor, EnableAutoGetMedias, AutoDownloadMediaTypePattern);
         return result;
     }
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    protected override async void OnPropertyChanged(PropertyChangedEventArgs e)
     {
-        this.DoOnDispatcher(p =>
+        await this.DoOnDispatcher(p =>
         {
             p.SaveSettingsCommand.NotifyCanExecuteChanged();
             p.ResetSettingsCommand.NotifyCanExecuteChanged();

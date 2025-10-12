@@ -1,7 +1,7 @@
 ﻿using ReactiveUI;
 using VRT.Downloaders.Common.Abstractions;
 using VRT.Downloaders.Common.Models;
-using VRT.Downloaders.Presentation.ViewModels;
+using VRT.Downloaders.Maui.ViewModels;
 
 namespace VRT.Downloaders.Maui.Pages;
 public partial class MainPage : ContentPage, IActivatableView

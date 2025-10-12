@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-
-namespace VRT.Downloaders.Presentation.ViewModels;
+﻿namespace VRT.Downloaders.Maui.ViewModels;
 
 public abstract class BaseViewModel : ObservableObject, IDisposable
 {

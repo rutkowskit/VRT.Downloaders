@@ -4,6 +4,7 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="TestResults\**" />

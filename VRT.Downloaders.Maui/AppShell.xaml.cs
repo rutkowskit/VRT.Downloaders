@@ -1,6 +1,6 @@
 ﻿using VRT.Downloaders.Common.Abstractions;
 using VRT.Downloaders.Maui.Pages;
-using VRT.Downloaders.Presentation.ViewModels;
+using VRT.Downloaders.Maui.ViewModels;
 
 namespace VRT.Downloaders.Maui;
 public partial class AppShell : Shell, IConfirmationService

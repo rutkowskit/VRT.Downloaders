@@ -1,8 +1,3 @@
-using System.Reactive.Linq;
-using System.Windows.Input;
-using VRT.Downloaders.Presentation.Extensions;
-using VRT.Downloaders.Services.Medias;
-
 namespace VRT.Downloaders.Maui.Controls;
 
 public partial class MediaListItemView : Grid
@@ -44,18 +39,18 @@ public partial class MediaListItemView : Grid
     }
 
     private async void OnCopyToClipboardButtonClick(object sender, EventArgs e)
-    {        
+    {
         if (BindingContext is MediaInfo mi)
         {
             await Microsoft.Maui.ApplicationModel.DataTransfer.Clipboard.Default.SetTextAsync(mi.Url.AbsoluteUri);
-            _ = ShowMessage("Copied");            
+            _ = ShowMessage("Copied");
         }
     }
 
     private async Task ShowMessage(string message)
     {
-        uxLastOptionMessageField.DoOnDispatcher(l => l.Text = message);
+        await uxLastOptionMessageField.DoOnDispatcher(l => l.Text = message);
         await Task.Delay(TimeSpan.FromMilliseconds(2000));
-        uxLastOptionMessageField.DoOnDispatcher(l => l.Text = string.Empty);
+        await uxLastOptionMessageField.DoOnDispatcher(l => l.Text = string.Empty);
     }
 }
