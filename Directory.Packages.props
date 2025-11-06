@@ -4,29 +4,29 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="CSharpFunctionalExtensions" Version="3.6.0" />
-    <PackageVersion Include="CommunityToolkit.Maui" Version="12.2.0" />
+    <PackageVersion Include="CommunityToolkit.Maui" Version="12.3.0" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageVersion Include="DynamicData" Version="9.4.1" />
-    <PackageVersion Include="FluentAssertions" Version="8.7.1" />
-    <PackageVersion Include="MediatR" Version="13.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.9" />
-    <PackageVersion Include="Microsoft.Maui.Controls" Version="9.0.110" />
+    <PackageVersion Include="FluentAssertions" Version="[6.12.2]" />
+    <PackageVersion Include="MediatR" Version="[12.5.0]" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0-rc.2.25502.107" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-rc.2.25502.107" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.0-rc.2.25502.107" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0-rc.2.25502.107" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.0-rc.2.25502.107" />
+    <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0-rc.2.25502.107" />
+    <PackageVersion Include="Microsoft.Maui.Controls" Version="10.0.0-rc.2.25504.7" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageVersion Include="ReactiveUI" Version="22.1.1" />
-    <PackageVersion Include="ReactiveUI.Maui" Version="22.1.1" />
-    <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.2" />
-    <PackageVersion Include="Serilog.Settings.Configuration" Version="9.0.0" />
+    <PackageVersion Include="ReactiveUI" Version="22.2.1" />
+    <PackageVersion Include="ReactiveUI.Maui" Version="22.2.1" />
+    <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.3-dev-02320" />
+    <PackageVersion Include="Serilog.Settings.Configuration" Version="9.0.1-dev-02319" />
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
-    <PackageVersion Include="YoutubeExplode" Version="6.5.5" />
+    <PackageVersion Include="YoutubeExplode" Version="6.5.6" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
-    <PackageVersion Include="YoutubeExplode.Converter" Version="6.5.5" />
+    <PackageVersion Include="YoutubeExplode.Converter" Version="6.5.6" />
   </ItemGroup>
 </Project>
