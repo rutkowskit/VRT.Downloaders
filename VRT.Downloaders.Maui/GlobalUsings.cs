@@ -1,6 +1,7 @@
 ﻿global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 global using CSharpFunctionalExtensions;
+global using DependencyPropertyGenerator;
 global using DynamicData;
 global using DynamicData.Binding;
 global using MediatR;

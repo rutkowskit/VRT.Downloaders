@@ -13,7 +13,13 @@
 		<SingleProject>true</SingleProject>
 		<SatelliteResourceLanguages>none</SatelliteResourceLanguages>
 		<NeutralLanguage>en-US</NeutralLanguage>
-				
+		
+		<!--Source generation testing-->
+		<MauiXamlInflator>SourceGen</MauiXamlInflator>
+		<!--<MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
+		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>-->
+
+
 		<!-- Display name -->
 		<ApplicationTitle>VRT.Downloaders.Maui</ApplicationTitle>
 
@@ -36,9 +42,7 @@
 		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
 		<WindowsPackageType>None</WindowsPackageType>
 		<SelfContained Condition="'$(IsUnpackaged)' == 'true'">true</SelfContained>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
-		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>	
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>		
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
@@ -108,6 +112,10 @@
 
 	<ItemGroup>
 	  <PackageReference Include="CommunityToolkit.Maui" />
+	  <PackageReference Include="DependencyPropertyGenerator">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="ReactiveUI.Maui" />
 	  <PackageReference Include="Microsoft.Maui.Controls" />	  
 	</ItemGroup>

@@ -59,7 +59,6 @@
                         </CollectionView>
                     </RefreshView>
                 </Grid>
-
             </Border>
             <Border Grid.Row="2" BackgroundColor="Transparent">
                 <Grid RowDefinitions="Auto,*" RowSpacing="5">
@@ -105,7 +104,7 @@
                                                 <Label
                                                     Grid.Column="1"
                                                     FontFamily="RobotoBold"
-                                                    FontSize="Caption"
+                                                    FontSize="12"
                                                     HorizontalTextAlignment="Center"
                                                     Text="{Binding DownloadProgress, Mode=OneWay, StringFormat='{0}%'}" />
                                             </Grid>
@@ -113,7 +112,7 @@
                                                 Grid.Row="2"
                                                 ColumnDefinitions="Auto,Auto,Auto"
                                                 ColumnSpacing="10">
-                                                <Label FontSize="Micro" Text="{Binding State, Converter={StaticResource DownloadStateToStringConverter}}" />
+                                                <Label FontSize="11" Text="{Binding State, Converter={StaticResource DownloadStateToStringConverter}}" />
                                                 <ImageButton
                                                     Grid.Column="1"
                                                     AutomationId="uxShowErrorButton"
